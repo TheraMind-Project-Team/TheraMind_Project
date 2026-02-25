@@ -1,0 +1,405 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.confirmation-container {
+    margin-top: 50px;
+  min-height: 100vh;
+  background: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  animation: fadeIn 0.6s ease-in;
+}
+
+.confirmation-card {
+  max-width: 600px;
+  width: 100%;
+  background: white;
+  border: 3px solid #2c3e50;
+  border-radius: 20px;
+  padding: 50px 40px;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  animation: fadeInUp 0.8s ease-out;
+}
+
+/* Success Icon */
+.success-icon-wrapper {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 30px;
+  animation: scaleIn 0.8s ease-out 0.2s backwards;
+}
+
+.success-checkmark {
+  width: 100%;
+  height: 100%;
+  animation: checkmarkDraw 0.8s ease-out 0.5s backwards;
+}
+
+/* Title */
+.confirmation-title {
+  font-size: 2rem;
+  color: #2c3e50;
+  margin-bottom: 10px;
+  font-weight: 700;
+  animation: slideInDown 0.8s ease-out 0.4s backwards;
+}
+
+.confirmation-subtitle {
+  font-size: 1rem;
+  color: #7f8c8d;
+  margin-bottom: 35px;
+  animation: fadeIn 1s ease-in 0.6s backwards;
+}
+
+/* Details Box */
+.details-box {
+  background: #e8f4f8;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 25px;
+  text-align: left;
+  animation: fadeInUp 1s ease-out 0.8s backwards;
+}
+
+.details-title {
+  font-size: 1.1rem;
+  color: #2c3e50;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.detail-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.detail-item:last-child {
+  margin-bottom: 0;
+}
+
+.detail-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.patient-icon {
+  color: #00b4d8;
+}
+
+.calendar-icon {
+  color: #00b4d8;
+}
+
+.time-icon {
+  color: #00b4d8;
+}
+
+.type-icon {
+  color: #00b4d8;
+}
+
+.detail-content {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+}
+
+.detail-label {
+  font-weight: 700;
+  color: #2c3e50;
+  font-size: 0.9rem;
+}
+
+.detail-value {
+  color: #5a6c7d;
+  font-size: 0.95rem;
+}
+
+/* Session Link Box (Only for Online) */
+.session-link-box {
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 25px;
+  text-align: left;
+  animation: fadeInUp 1s ease-out 1s backwards;
+}
+
+.session-link-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #00b4d8;
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 15px;
+}
+
+.link-icon {
+  width: 22px;
+  height: 22px;
+}
+
+.link-input-wrapper {
+  margin-bottom: 15px;
+}
+
+.link-input {
+  width: 100%;
+  padding: 12px 15px;
+  background: #f8f9fa;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #5a6c7d;
+  font-family: monospace;
+}
+
+.copy-link-btn {
+  width: 100%;
+  padding: 12px;
+  background: #00b4d8;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.copy-link-btn:hover {
+  background: #0096c7;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 180, 216, 0.3);
+}
+
+.copy-link-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+}
+
+/* Back to Home Button */
+.back-home-btn {
+  width: 100%;
+  padding: 14px;
+  background: #00b4d8;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 180, 216, 0.3);
+  animation: fadeInUp 1s ease-out 1.2s backwards;
+}
+
+.back-home-btn:hover {
+  background: #0096c7;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 180, 216, 0.4);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes checkmarkDraw {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .confirmation-container {
+    padding: 30px 15px;
+  }
+
+  .confirmation-card {
+    padding: 40px 30px;
+  }
+
+  .success-icon-wrapper {
+    width: 80px;
+    height: 80px;
+  }
+
+  .confirmation-title {
+    font-size: 1.7rem;
+  }
+
+  .confirmation-subtitle {
+    font-size: 0.95rem;
+  }
+
+  .details-box {
+    padding: 20px;
+  }
+
+  .details-title {
+    font-size: 1rem;
+  }
+
+  .detail-item {
+    gap: 12px;
+  }
+
+  .detail-icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  .detail-label {
+    font-size: 0.85rem;
+  }
+
+  .detail-value {
+    font-size: 0.9rem;
+  }
+
+  .session-link-box {
+    padding: 20px;
+  }
+
+  .session-link-header {
+    font-size: 0.95rem;
+  }
+
+  .link-input {
+    font-size: 0.85rem;
+    padding: 10px 12px;
+  }
+
+  .copy-link-btn,
+  .back-home-btn {
+    font-size: 1rem;
+    padding: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .confirmation-card {
+    padding: 30px 20px;
+    border-width: 2px;
+  }
+
+  .success-icon-wrapper {
+    width: 70px;
+    height: 70px;
+  }
+
+  .confirmation-title {
+    font-size: 1.5rem;
+  }
+
+  .confirmation-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .details-box {
+    padding: 18px;
+  }
+
+  .details-title {
+    font-size: 0.95rem;
+  }
+
+  .detail-item {
+    flex-direction: row;
+    gap: 10px;
+  }
+
+  .detail-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .detail-label {
+    font-size: 0.8rem;
+  }
+
+  .detail-value {
+    font-size: 0.85rem;
+  }
+
+  .session-link-box {
+    padding: 15px;
+  }
+
+  .link-input {
+    font-size: 0.8rem;
+    padding: 10px;
+  }
+
+  .copy-link-btn,
+  .back-home-btn {
+    font-size: 0.95rem;
+  }
+}

@@ -1,0 +1,419 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.test-result-container {
+  min-height: 100vh;
+  background: #f8f9fa;
+  padding: 40px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  animation: fadeIn 0.6s ease-in;
+}
+
+.result-card {
+  max-width: 700px;
+  width: 100%;
+  background: white;
+  border: 3px solid #2c3e50;
+  border-radius: 20px;
+  padding: 50px 40px;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.success-icon-wrapper {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 25px;
+  background: linear-gradient(135deg, #e8f4f8 0%, #cfe9f3 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: scaleIn 0.8s ease-out 0.2s backwards;
+}
+
+.success-icon {
+  width: 60px;
+  height: 60px;
+  color: #00b4d8;
+  animation: checkmark 0.5s ease-out 0.8s backwards;
+}
+
+.result-title {
+  font-size: 2rem;
+  color: #2c3e50;
+  margin-bottom: 10px;
+  font-weight: 700;
+  animation: slideInDown 0.8s ease-out 0.4s backwards;
+}
+
+.result-subtitle {
+  font-size: 1rem;
+  color: #7f8c8d;
+  margin-bottom: 35px;
+  animation: fadeIn 1s ease-in 0.6s backwards;
+}
+
+.result-box {
+  background: #f8f9fa;
+  border: 2px solid #e0e0e0;
+  border-radius: 16px;
+  padding: 35px 30px;
+  margin-bottom: 30px;
+  animation: fadeInUp 1s ease-out 0.8s backwards;
+}
+
+.assessment-name {
+  font-size: 1.2rem;
+  color: #2c3e50;
+  margin-bottom: 25px;
+  font-weight: 700;
+}
+
+.score-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.score-value {
+  font-size: 3.5rem;
+  color: #2c3e50;
+  font-weight: 700;
+  line-height: 1;
+  animation: countUp 1s ease-out 1.2s backwards;
+}
+
+.severity-badge {
+  padding: 8px 20px;
+  background: #f39c12;
+  color: white;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: 700;
+  animation: slideInRight 0.6s ease-out 1.4s backwards;
+}
+
+.score-bar-container {
+  width: 100%;
+  height: 12px;
+  background: #e0e0e0;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 25px;
+}
+
+.score-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #2c3e50 0%, #34495e 100%);
+  border-radius: 10px;
+  transition: width 1.5s ease-out 1s;
+  animation: fillBar 1.5s ease-out 1s backwards;
+}
+
+.interpretation-box {
+  background: white;
+  border: 1px solid #d1e7f0;
+  border-left: 4px solid #00b4d8;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: left;
+  animation: fadeIn 1s ease-in 1.6s backwards;
+}
+
+.interpretation-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  color: #00b4d8;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.info-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.interpretation-text {
+  color: #5a6c7d;
+  line-height: 1.7;
+  font-size: 0.95rem;
+}
+
+.book-session-btn {
+  width: 100%;
+  padding: 16px;
+  background: #00b4d8;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 15px;
+  box-shadow: 0 4px 15px rgba(0, 180, 216, 0.3);
+  animation: fadeInUp 1s ease-out 1.8s backwards;
+}
+
+.book-session-btn:hover {
+  background: #0096c7;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 180, 216, 0.4);
+}
+
+.back-home-btn {
+  width: 100%;
+  padding: 14px;
+  background: white;
+  color: #2c3e50;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  animation: fadeInUp 1s ease-out 2s backwards;
+}
+
+.back-home-btn:hover {
+  border-color: #00b4d8;
+  color: #00b4d8;
+}
+
+.back-home-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+}
+
+.disclaimer {
+  font-size: 0.8rem;
+  color: #95a5a6;
+  line-height: 1.6;
+  text-align: center;
+  animation: fadeIn 1s ease-in 2.2s backwards;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes checkmark {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes countUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fillBar {
+  from {
+    width: 0;
+  }
+  to {
+    width: var(--final-width, 30%);
+  }
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .test-result-container {
+    padding: 30px 15px;
+  }
+
+  .result-card {
+    padding: 40px 30px;
+  }
+
+  .success-icon-wrapper {
+    width: 80px;
+    height: 80px;
+  }
+
+  .success-icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .result-title {
+    font-size: 1.7rem;
+  }
+
+  .result-subtitle {
+    font-size: 0.95rem;
+  }
+
+  .result-box {
+    padding: 25px 20px;
+  }
+
+  .assessment-name {
+    font-size: 1.1rem;
+  }
+
+  .score-value {
+    font-size: 3rem;
+  }
+
+  .severity-badge {
+    font-size: 0.9rem;
+    padding: 6px 16px;
+  }
+
+  .interpretation-box {
+    padding: 18px;
+  }
+
+  .book-session-btn {
+    padding: 14px;
+    font-size: 1rem;
+  }
+
+  .back-home-btn {
+    padding: 12px;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .result-card {
+    padding: 30px 20px;
+    border-width: 2px;
+  }
+
+  .success-icon-wrapper {
+    width: 70px;
+    height: 70px;
+  }
+
+  .success-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .result-title {
+    font-size: 1.5rem;
+  }
+
+  .result-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .result-box {
+    padding: 20px 15px;
+  }
+
+  .assessment-name {
+    font-size: 1rem;
+  }
+
+  .score-section {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .score-value {
+    font-size: 2.5rem;
+  }
+
+  .severity-badge {
+    font-size: 0.85rem;
+  }
+
+  .interpretation-box {
+    padding: 15px;
+  }
+
+  .interpretation-text {
+    font-size: 0.9rem;
+  }
+
+  .book-session-btn {
+    font-size: 0.95rem;
+  }
+
+  .disclaimer {
+    font-size: 0.75rem;
+  }
+}

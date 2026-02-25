@@ -1,0 +1,519 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.robot-meeting-container {
+  margin-top: 70px;
+  width: 100%;
+  height: 100vh;
+  background: #1a1d29;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: white;
+}
+
+/* Header */
+.meeting-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 30px;
+  background: #23272f;
+  animation: slideInDown 0.6s ease-out;
+}
+
+.meeting-title {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.meeting-title h2 {
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.recording-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(239, 68, 68, 0.2);
+  padding: 6px 12px;
+  border-radius: 20px;
+}
+
+.rec-dot {
+  width: 10px;
+  height: 10px;
+  background: #ef4444;
+  border-radius: 50%;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.rec-text {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #ef4444;
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.view-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: #2d3139;
+  border: none;
+  border-radius: 8px;
+  color: #a0aec0;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.view-toggle:hover,
+.view-toggle.active {
+  background: #3d4149;
+  color: white;
+}
+
+.view-toggle svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+}
+
+.menu-button {
+  width: 40px;
+  height: 40px;
+  background: #2d3139;
+  border: none;
+  border-radius: 8px;
+  color: #a0aec0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.menu-button:hover {
+  background: #3d4149;
+  color: white;
+}
+
+.menu-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Main Content */
+.meeting-content {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 20px;
+  padding: 20px;
+  overflow: hidden;
+  animation: fadeIn 0.8s ease-in;
+}
+
+.video-container {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #2d3139;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.robot-video {
+  animation-delay: 0.2s;
+}
+
+.user-video {
+  animation-delay: 0.4s;
+}
+
+.video-label {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  z-index: 10;
+}
+
+.video-label svg {
+  width: 18px;
+  height: 18px;
+  color: #00b4d8;
+}
+
+.robot-display {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #2d3139 0%, #3d4149 100%);
+}
+
+.robot-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: zoomIn 1s ease-out;
+}
+
+.user-display {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+  gap: 20px;
+}
+
+.user-avatar {
+  width: 100px;
+  height: 100px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.user-avatar svg {
+  width: 60px;
+  height: 60px;
+  color: white;
+}
+
+.user-label {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: white;
+}
+
+.video-label-bottom {
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* Controls */
+.meeting-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 30px;
+  background: #23272f;
+  border-top: 1px solid #2d3139;
+  animation: slideInUp 0.6s ease-out;
+}
+
+.controls-left,
+.controls-right {
+  display: flex;
+  gap: 10px;
+}
+
+.timer-display {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #2d3139;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.timer-dot {
+  width: 8px;
+  height: 8px;
+  background: #10b981;
+  border-radius: 50%;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.controls-center {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.control-button {
+  width: 50px;
+  height: 50px;
+  background: #3d4149;
+  border: none;
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.control-button:hover {
+  background: #4d5159;
+  transform: scale(1.1);
+}
+
+.control-button svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+}
+
+.control-button.off {
+  background: #ef4444;
+}
+
+.control-button.off:hover {
+  background: #dc2626;
+}
+
+.control-button.active {
+  background: #00b4d8;
+}
+
+.control-button.active:hover {
+  background: #0096c7;
+}
+
+.end-call-button {
+  width: auto;
+  padding: 0 20px;
+  background: #ef4444;
+  border-radius: 25px;
+  gap: 8px;
+}
+
+.end-call-button:hover {
+  background: #dc2626;
+}
+
+.end-call-button span {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.whatsapp-button {
+  background: #25d366;
+}
+
+.whatsapp-button:hover {
+  background: #20ba5a;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+/* Media Queries */
+@media (max-width: 1200px) {
+  .meeting-content {
+    grid-template-columns: 1fr 280px;
+  }
+}
+
+@media (max-width: 968px) {
+  .meeting-header {
+    padding: 15px 20px;
+  }
+
+  .meeting-title h2 {
+    font-size: 1.1rem;
+  }
+
+  .view-toggle span {
+    display: none;
+  }
+
+  .meeting-content {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 200px;
+  }
+
+  .user-video {
+    grid-row: 2;
+  }
+
+  .controls-center {
+    gap: 10px;
+  }
+
+  .control-button {
+    width: 45px;
+    height: 45px;
+  }
+
+  .end-call-button span {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .meeting-header {
+    padding: 12px 15px;
+  }
+
+  .meeting-title h2 {
+    font-size: 1rem;
+  }
+
+  .meeting-content {
+    padding: 15px;
+    gap: 15px;
+  }
+
+  .meeting-controls {
+    padding: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .controls-left,
+  .controls-right {
+    display: none;
+  }
+
+  .controls-center {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .control-button {
+    width: 48px;
+    height: 48px;
+  }
+
+  .control-button svg {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+@media (max-width: 480px) {
+  .meeting-content {
+    grid-template-rows: 1fr 150px;
+  }
+
+  .video-label {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+  }
+
+  .user-avatar {
+    width: 80px;
+    height: 80px;
+  }
+
+  .user-avatar svg {
+    width: 50px;
+    height: 50px;
+  }
+
+  .user-label {
+    font-size: 1.2rem;
+  }
+
+  .controls-center {
+    gap: 8px;
+  }
+
+  .control-button {
+    width: 42px;
+    height: 42px;
+  }
+}

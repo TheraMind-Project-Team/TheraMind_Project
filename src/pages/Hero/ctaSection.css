@@ -1,0 +1,34 @@
+/* src/components/CtaSection/CtaSection.css */
+.cta-section {
+    padding: 50px 40px 80px 40px; /* زيادة المساحة السفلية */
+    padding-top: 100px;
+    padding-bottom: 50px;
+    background-color: var(--f7f7f7); 
+}
+
+.cta-content {
+    background-color: var(--light-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    
+    opacity: 0;
+    transform: scale(0.95);
+    animation: zoomIn 0.5s 0.7s forwards;
+}
+
+.cta-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+.cta-text {
+    font-size: 1rem;
+    color: var(--subtitle-color);
+    max-width: 800px;
+    margin: 0 auto;
+}

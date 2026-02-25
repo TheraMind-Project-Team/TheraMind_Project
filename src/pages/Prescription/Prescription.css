@@ -1,0 +1,481 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.prescription-container {
+    margin-top: 50px;
+  min-height: 100vh;
+  background: #f0f2f5;
+  padding: 40px 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  animation: fadeIn 0.6s ease-in;
+}
+
+.prescription-header-section {
+  text-align: center;
+  margin-bottom: 40px;
+  animation: slideInDown 0.8s ease-out;
+}
+
+.prescription-icon-wrapper {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px;
+  background: linear-gradient(135deg, #00b4d8 0%, #0096c7 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 20px rgba(0, 180, 216, 0.3);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.prescription-header-icon {
+  width: 40px;
+  height: 40px;
+  color: white;
+}
+
+.prescription-header-section h1 {
+  font-size: 2rem;
+  color: #2c3e50;
+  margin-bottom: 8px;
+}
+
+.prescription-header-section p {
+  color: #7f8c8d;
+  font-size: 1rem;
+}
+
+.prescription-card {
+  max-width: 900px;
+  margin: 0 auto 30px;
+  background: white;
+  border: 3px solid #2c3e50;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  animation: fadeInUp 0.8s ease-out 0.2s backwards;
+}
+
+.prescription-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: 25px;
+  border-bottom: 2px solid #e0e0e0;
+  margin-bottom: 30px;
+}
+
+.clinic-info {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.clinic-icon {
+  width: 50px;
+  height: 50px;
+  background: #00b4d8;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clinic-icon svg {
+  width: 28px;
+  height: 28px;
+  color: white;
+}
+
+.clinic-info h3 {
+  font-size: 1.2rem;
+  color: #2c3e50;
+  margin-bottom: 4px;
+}
+
+.clinic-info p {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+.prescription-meta {
+  text-align: right;
+}
+
+.prescription-meta p {
+  color: #5a6c7d;
+  font-size: 0.85rem;
+  margin-bottom: 4px;
+}
+
+.prescription-id {
+  color: #00b4d8 !important;
+  font-weight: 600;
+  font-size: 0.8rem !important;
+}
+
+.prescription-section {
+  margin-bottom: 30px;
+  animation: fadeInUp 0.6s ease-out backwards;
+}
+
+.prescription-section:nth-child(2) { animation-delay: 0.3s; }
+.prescription-section:nth-child(3) { animation-delay: 0.4s; }
+.prescription-section:nth-child(4) { animation-delay: 0.5s; }
+.prescription-section:nth-child(5) { animation-delay: 0.6s; }
+.prescription-section:nth-child(6) { animation-delay: 0.7s; }
+
+.prescription-section h3 {
+  font-size: 1.1rem;
+  color: #2c3e50;
+  margin-bottom: 15px;
+  font-weight: 700;
+}
+
+.section-title-icon {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #00b4d8;
+  margin-bottom: 15px;
+}
+
+.section-title-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.section-title-icon h3 {
+  color: #00b4d8;
+  margin-bottom: 0;
+}
+
+.doctor-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.doctor-info-grid p {
+  color: #5a6c7d;
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+}
+
+.doctor-info-grid strong {
+  color: #2c3e50;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 0.9rem;
+}
+
+.required {
+  color: #e74c3c;
+}
+
+.form-group input,
+.form-group textarea {
+  padding: 12px 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #00b4d8;
+  box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.1);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.recommendation-text {
+  background: #e8f4f8;
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 4px solid #00b4d8;
+  color: #5a6c7d;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  margin-top: 15px;
+}
+
+.medication-block {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #e0e0e0;
+}
+
+.add-medication-btn {
+  width: 100%;
+  padding: 14px;
+  background: #00b4d8;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.add-medication-btn:hover {
+  background: #0096c7;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 180, 216, 0.3);
+}
+
+.add-medication-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+}
+
+.signature-section {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 10px;
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+}
+
+.signature-icon {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.signature-icon svg {
+  width: 28px;
+  height: 28px;
+  color: white;
+}
+
+.signature-label {
+  font-size: 0.9rem;
+  color: #7f8c8d;
+  margin-bottom: 5px;
+}
+
+.signature-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #00b4d8;
+  margin-bottom: 8px;
+}
+
+.signature-disclaimer {
+  font-size: 0.85rem;
+  color: #5a6c7d;
+  line-height: 1.5;
+}
+
+.action-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.action-buttons button {
+  padding: 14px 20px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.action-buttons button svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+}
+
+.btn-save {
+  background: #00b4d8;
+  color: white;
+}
+
+.btn-save:hover {
+  background: #0096c7;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 180, 216, 0.3);
+}
+
+.btn-print {
+  background: white;
+  color: #2c3e50;
+  border: 2px solid #e0e0e0;
+}
+
+.btn-print:hover {
+  border-color: #2c3e50;
+  transform: translateY(-2px);
+}
+
+.btn-send {
+  background: #27ae60;
+  color: white;
+}
+
+.btn-send:hover {
+  background: #229954;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+}
+
+.back-profile-btn {
+  display: block;
+  margin: 0 auto;
+  padding: 12px 40px;
+  background: white;
+  color: #2c3e50;
+  border: 2px solid #2c3e50;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.back-profile-btn:hover {
+  background: #2c3e50;
+  color: white;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .prescription-container {
+    padding: 30px 15px;
+  }
+
+  .prescription-card {
+    padding: 30px 25px;
+  }
+
+  .prescription-card-header {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .prescription-meta {
+    text-align: left;
+  }
+
+  .doctor-info-grid,
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .action-buttons {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .prescription-card {
+    padding: 25px 20px;
+    border-width: 2px;
+  }
+
+  .prescription-header-section h1 {
+    font-size: 1.6rem;
+  }
+
+  .clinic-info {
+    flex-direction: column;
+    text-align: center;
+  }
+}

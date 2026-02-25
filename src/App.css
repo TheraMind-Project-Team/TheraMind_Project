@@ -1,38 +1,58 @@
-.App {
-  text-align: center;
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+/*body {
+    font-family: "Open Sans", sans-serif;
+}*/
+/* src/App.css */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    background-color: #f7f7f7; /* خلفية خفيفة للصفحة */
+    color: #333333;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+:root {
+    --primary-color: #3f51b5; /* الأزرق الرئيسي */
+    --purple-color: #9c27b0; /* لون الأيقونة الثالثة */
+    --text-color: #333333;
+    --subtitle-color: #666666;
+    --border-color: #e0e0e0;
+    --light-bg: #ffffff;
+    --blue-bg-light: #e8eaf6; /* خلفية خفيفة للـ Tagline */
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+/* تنسيق للعنوان المائل باللون الأزرق */
+.highlight {
+    color: var(--primary-color);
 }
 
-.App-link {
-  color: #61dafb;
+/* تنسيقات الأقسام الحاوية */
+section {
+    padding: 80px 40px;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* ------------------- Keyframes (لجميع الأقسام) ------------------- */
+@keyframes slideInLeft {
+    to { opacity: 1; transform: translateX(0); }
+    from { opacity: 0; transform: translateX(-50px); }
+}
+
+@keyframes scaleIn {
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes zoomIn {
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fadeInUp {
+    to { opacity: 1; transform: translateY(0); }
 }
