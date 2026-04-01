@@ -85,7 +85,7 @@ const MeetingRobot = () => {
           </div>
           <div className="robot-display">
   <DoctorRobotAvatar
-    avatarUrl="https://models.readyplayer.me/69530adc0ca398caeab557ae.glb?referrer=grok.com"
+    avatarUrl="/69530adc0ca398caeab557ae.glb"
   />
 </div>
         </div>
