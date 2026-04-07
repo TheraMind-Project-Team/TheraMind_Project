@@ -1,43 +1,33 @@
-// src/pages/Login.jsx
-
+// src/pages/SignLog/Login.jsx
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faGoogle,
-  faMicrosoft,
-  faEnvelope,
-  faLock,
-} from '@fortawesome/free-solid-svg-icons';
+import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
 import { faGoogle as faGoogleBrand, faMicrosoft as faMicrosoftBrand } from '@fortawesome/free-brands-svg-icons';
-
-// استبدل المسار ده بالصورة الفعلية عندك
-import loginImage from './c334bcc9-ad42-4b1c-af87-1f2975f0b9d4.png'; // أو ./assets/login-image.jpg
-
-// نستخدم نفس الـ CSS اللي عملناه لـ Signup (مع بعض التعديلات البسيطة)
-import './LoginForm.css'; // نفس الملف! (أو غيّر الاسم لو عملت ملف منفصل Auth.css)
+import { useAuth } from '../../context/AuthContext';
+import loginImage from './c334bcc9-ad42-4b1c-af87-1f2975f0b9d4.png';
+import './LoginForm.css';
 
 const Login = () => {
+  const { login } = useAuth(); // ← من الـ Context
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
-  const [submitted, setSubmitted] = useState(false);
 
   const validate = () => {
     const newErrors = {};
-
     if (!email.trim()) {
       newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(email)) {
       newErrors.email = 'Email is invalid';
     }
-
     if (!password) {
       newErrors.password = 'Password is required';
     } else if (password.length < 6) {
       newErrors.password = 'Password must be at least 6 characters';
     }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -45,10 +35,8 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validate()) {
-      setSubmitted(true);
-      console.log({ email, password });
-      alert('Login successful!'); // هنا هترسلي للـ API بعدين
-      // يمكنك توجيه المستخدم: navigate('/dashboard')
+      login();           // ← الـ Navbar يتغير فوراً أوتوماتيك
+      navigate('/Home'); // ← توجيه للهوم بدون refresh
     }
   };
 
@@ -62,7 +50,7 @@ const Login = () => {
       </div>
 
       {/* القسم الأيمن: الفورم */}
-      <div className="auth-form-card"> {/* نفس الكلاس signup-card بس من غير اسم signup */}
+      <div className="auth-form-card">
         <h2 className="auth-title">Welcome Back!</h2>
         <p className="auth-subtitle" style={{ textAlign: 'center', color: '#666', marginBottom: '30px' }}>
           Log in to continue your journey to better health.
@@ -109,14 +97,12 @@ const Login = () => {
             Forgot Password?
           </Link>
 
-          {submitted && <p style={{ color: 'green', textAlign: 'center' }}>Login successful!</p>}
-
-          <button type="submit" className="btn btn-primary signup-button"> {/* نفس الكلاس عشان نفس الستايل */}
+          <button type="submit" className="btn btn-primary signup-button">
             Login
           </button>
         </form>
 
-        <p className="login-link"> {/* نفس الكلاس بس غيرنا النص */}
+        <p className="login-link">
           Don't have an account? <Link to="/signup">Sign up</Link>
         </p>
       </div>

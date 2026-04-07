@@ -1,20 +1,22 @@
+// src/pages/SignLog/Signup.jsx
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faEnvelope, 
-  faLock, 
-  faPhone, 
-  faMapMarkerAlt, 
-  faCalendarAlt 
+import {
+  faEnvelope,
+  faLock,
+  faPhone,
+  faMapMarkerAlt,
+  faCalendarAlt
 } from '@fortawesome/free-solid-svg-icons';
 import { faGoogle, faMicrosoft } from '@fortawesome/free-brands-svg-icons';
+import { useAuth } from '../../context/AuthContext';
 import signupImage from './c334bcc9-ad42-4b1c-af87-1f2975f0b9d4.png';
-
-import './SignupForm.css'; // نفس الـ CSS اللي كنتي بتستخدميه
+import './SignupForm.css';
 
 const Signup = () => {
   const navigate = useNavigate();
+  const { login } = useAuth(); // ← من الـ Context
 
   const [userType, setUserType] = useState('patient');
   const [firstName, setFirstName] = useState('');
@@ -42,7 +44,6 @@ const Signup = () => {
     if (!password) newErrors.password = 'Password is required';
     else if (password.length < 6) newErrors.password = 'Password must be at least 6 characters';
     if (password !== confirmPassword) newErrors.confirmPassword = 'Passwords do not match';
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -50,21 +51,14 @@ const Signup = () => {
   const handleContinue = (e) => {
     e.preventDefault();
     if (validate()) {
-      // جمع البيانات الأساسية
       const basicData = {
-        userType,
-        firstName,
-        lastName,
-        email,
-        phone,
-        country,
-        city,
-        gender,
-        birthDate,
-        password
+        userType, firstName, lastName, email,
+        phone, country, city, gender, birthDate, password
       };
 
-      // التنقل للصفحة الثانية حسب نوع المستخدم
+      // ← login() هنا عشان الـ Navbar يتغير فوراً حتى لو في صفحة Additional
+      login();
+
       if (userType === 'patient') {
         navigate('/signup/patient', { state: basicData });
       } else {
@@ -74,10 +68,10 @@ const Signup = () => {
   };
 
   return (
-    <div className="auth-page-wrepper"> {/* صححنا wrepper → wrapper */}
+    <div className="auth-page-wrepper">
       {/* القسم الأيسر: الصورة */}
-      <div className="auth-image-sec"> {/* صححنا sec → section */}
-        <div className="image-place signup-image-bg"> {/* صححنا place → placeholder */}
+      <div className="auth-image-sec">
+        <div className="image-place signup-image-bg">
           <img src={signupImage} alt="Doctor and patient" />
         </div>
       </div>
@@ -88,7 +82,7 @@ const Signup = () => {
           Begin your journey to peace of mind with your doctor and AI.
         </h2>
 
-        {/* أزرار Social Login */}
+        {/* Social Login Buttons */}
         <div className="social-login-buttons">
           <button className="btn btn-social btn-google">
             <FontAwesomeIcon icon={faGoogle} /> Sign up with Google
@@ -106,10 +100,7 @@ const Signup = () => {
             <span className="radio-label">I am a:</span>
             <div className="radio-option">
               <input
-                type="radio"
-                id="patient"
-                name="userType"
-                value="patient"
+                type="radio" id="patient" name="userType" value="patient"
                 checked={userType === 'patient'}
                 onChange={(e) => setUserType(e.target.value)}
               />
@@ -117,10 +108,7 @@ const Signup = () => {
             </div>
             <div className="radio-option">
               <input
-                type="radio"
-                id="doctor"
-                name="userType"
-                value="doctor"
+                type="radio" id="doctor" name="userType" value="doctor"
                 checked={userType === 'doctor'}
                 onChange={(e) => setUserType(e.target.value)}
               />
@@ -131,43 +119,27 @@ const Signup = () => {
           {/* الاسم الأول والأخير */}
           <div className="input-group-row">
             <div className="input-group">
-              <input
-                type="text"
-                placeholder="First Name"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-              />
+              <input type="text" placeholder="First Name" value={firstName}
+                onChange={(e) => setFirstName(e.target.value)} />
               {errors.firstName && <p className="error">{errors.firstName}</p>}
             </div>
             <div className="input-group">
-              <input
-                type="text"
-                placeholder="Last Name"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-              />
+              <input type="text" placeholder="Last Name" value={lastName}
+                onChange={(e) => setLastName(e.target.value)} />
               {errors.lastName && <p className="error">{errors.lastName}</p>}
             </div>
           </div>
 
           <div className="input-group">
-            <input
-              type="email"
-              placeholder="Email Address"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
+            <input type="email" placeholder="Email Address" value={email}
+              onChange={(e) => setEmail(e.target.value)} />
             <FontAwesomeIcon icon={faEnvelope} className="input-icon" />
             {errors.email && <p className="error">{errors.email}</p>}
           </div>
 
           <div className="input-group">
-            <input
-              type="tel"
-              placeholder="Phone Number"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-            />
+            <input type="tel" placeholder="Phone Number" value={phone}
+              onChange={(e) => setPhone(e.target.value)} />
             <FontAwesomeIcon icon={faPhone} className="input-icon" />
             {errors.phone && <p className="error">{errors.phone}</p>}
           </div>
@@ -179,18 +151,16 @@ const Signup = () => {
                 <option value="">Select Country</option>
                 <option value="Egypt">Egypt</option>
                 <option value="USA">USA</option>
-                {/* أضيفي دول أكتر */}
+                <option value="Saudi Arabia">Saudi Arabia</option>
+                <option value="UAE">UAE</option>
+                <option value="Jordan">Jordan</option>
               </select>
               <FontAwesomeIcon icon={faMapMarkerAlt} className="input-icon" />
               {errors.country && <p className="error">{errors.country}</p>}
             </div>
             <div className="input-group">
-              <input
-                type="text"
-                placeholder="City"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-              />
+              <input type="text" placeholder="City" value={city}
+                onChange={(e) => setCity(e.target.value)} />
               <FontAwesomeIcon icon={faMapMarkerAlt} className="input-icon" />
               {errors.city && <p className="error">{errors.city}</p>}
             </div>
@@ -201,59 +171,36 @@ const Signup = () => {
             <div className="radio-group-row">
               <span className="radio-label">Gender:</span>
               <div className="radio-option">
-                <input
-                  type="radio"
-                  id="male"
-                  name="gender"
-                  value="male"
+                <input type="radio" id="male" name="gender" value="male"
                   checked={gender === 'male'}
-                  onChange={(e) => setGender(e.target.value)}
-                />
+                  onChange={(e) => setGender(e.target.value)} />
                 <label htmlFor="male">Male</label>
               </div>
               <div className="radio-option">
-                <input
-                  type="radio"
-                  id="female"
-                  name="gender"
-                  value="female"
+                <input type="radio" id="female" name="gender" value="female"
                   checked={gender === 'female'}
-                  onChange={(e) => setGender(e.target.value)}
-                />
+                  onChange={(e) => setGender(e.target.value)} />
                 <label htmlFor="female">Female</label>
               </div>
             </div>
-
             <div className="input-group date-input">
-              <input
-                type="text"
-                placeholder="mm/dd/yyyy"
-                value={birthDate}
-                onChange={(e) => setBirthDate(e.target.value)}
-              />
+              <input type="text" placeholder="mm/dd/yyyy" value={birthDate}
+                onChange={(e) => setBirthDate(e.target.value)} />
               <FontAwesomeIcon icon={faCalendarAlt} className="input-icon" />
               {errors.birthDate && <p className="error">{errors.birthDate}</p>}
             </div>
           </div>
 
           <div className="input-group">
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+            <input type="password" placeholder="Password" value={password}
+              onChange={(e) => setPassword(e.target.value)} />
             <FontAwesomeIcon icon={faLock} className="input-icon" />
             {errors.password && <p className="error">{errors.password}</p>}
           </div>
 
           <div className="input-group">
-            <input
-              type="password"
-              placeholder="Confirm Password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
+            <input type="password" placeholder="Confirm Password" value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)} />
             <FontAwesomeIcon icon={faLock} className="input-icon" />
             {errors.confirmPassword && <p className="error">{errors.confirmPassword}</p>}
           </div>

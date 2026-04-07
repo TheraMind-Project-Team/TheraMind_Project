@@ -1,20 +1,22 @@
-// src/components/Navbar/Navbar.jsx
+// src/components/navbar/Navbar.jsx
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faChevronDown, 
-  faBrain, 
-  faUser, 
+import {
+  faChevronDown,
+  faBrain,
+  faUser,
   faSignOutAlt,
-  faRobot 
+  faRobot,
+  faMagnifyingGlass,
 } from '@fortawesome/free-solid-svg-icons';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+import ProtectedLink from '../ProtectedLink/ProtectedLink';
 import './navbar.css';
 
 const Navbar = () => {
   const navigate = useNavigate();
-
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const { isLoggedIn, logout } = useAuth(); // ← من الـ Context مش useState
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const dropdownItems = [
@@ -22,7 +24,7 @@ const Navbar = () => {
     { name: 'Generalized Anxiety Disorder', path: '/tests/anxiety' },
     { name: 'Panic Disorder', path: '/tests/panic' },
     { name: 'Stress Assessment', path: '/tests/stress' },
-    { name: 'Eating Disorders', path: '/tests/eating' }
+    { name: 'Eating Disorders', path: '/tests/eating' },
   ];
 
   const toggleDropdown = () => {
@@ -30,16 +32,18 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
-    setIsLoggedIn(false);
+    logout();         // ← يحدّث الـ Context فوراً
     navigate('/login');
   };
 
   const Logo = (
     <div className="navbar-logo">
-      <Link to="/"><span className="logo-text">
-        <FontAwesomeIcon icon={faBrain} className="logo-icon" /> 
-        TheraMind
-      </span></Link>
+      <Link to="/">
+        <span className="logo-text">
+          <FontAwesomeIcon icon={faBrain} className="logo-icon" />
+          TheraMind
+        </span>
+      </Link>
     </div>
   );
 
@@ -49,29 +53,30 @@ const Navbar = () => {
         {Logo}
 
         <ul className="navbar-links">
-          <li><Link to="/Home" className="nav-link">Home</Link></li>
-          <li><Link to="/about" className="nav-link">About</Link></li>
-          {/*<li><Link to="/blogs" className="nav-link">Blogs</Link></li>*/}
+          <li>
+            {/* Home محمي: لو مش logged in → Signup */}
+            <ProtectedLink to="/Home" className="nav-link">Home</ProtectedLink>
+          </li>
+          <li>
+            <ProtectedLink to="/about" className="nav-link">About</ProtectedLink>
+          </li>
 
           {/* Tests Dropdown */}
-          <li 
+          <li
             className="dropdown-link"
             onMouseEnter={() => setIsDropdownOpen(true)}
             onMouseLeave={() => setIsDropdownOpen(false)}
           >
             <span className="nav-link" onClick={toggleDropdown}>
-              Tests 
+              Tests
               <FontAwesomeIcon icon={faChevronDown} size="xs" className="dropdown-arrow" />
             </span>
-
             {isDropdownOpen && (
               <div className="dropdown-menu">
                 <ul>
                   {dropdownItems.map((item, index) => (
                     <li key={index} className="dropdown-item">
-                      <Link to={item.path}>
-                        {item.name}
-                      </Link>
+                      <ProtectedLink to={item.path}>{item.name}</ProtectedLink>
                     </li>
                   ))}
                 </ul>
@@ -80,15 +85,16 @@ const Navbar = () => {
           </li>
         </ul>
 
-        {/* القسم الأيمن: يتغير حسب حالة الدخول */}
+        {/* القسم الأيمن: يتغير أوتوماتيك حسب الـ Context */}
         <div className="navbar-right">
           {isLoggedIn ? (
             <>
               {/* حقل البحث */}
               <div className="search-bar">
-                <input 
-                  type="text" 
-                  placeholder="Search for doctors..." 
+                <FontAwesomeIcon icon={faMagnifyingGlass} className="search-icon" />
+                <input
+                  type="text"
+                  placeholder="Search for doctors..."
                   className="search-input"
                 />
               </div>
