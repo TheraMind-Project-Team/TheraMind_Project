@@ -1,269 +1,344 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-const DoctorRobotAvatar = ({ 
-  avatarUrl = '/69530adc0ca398caeab557ae.glb', 
-  containerStyle = {} 
+// ══════════════════════════════════════════════════════════════════════════
+// الابتسامة الأساسية دايماً موجودة — التعابير بتتضاف فوقيها
+// ══════════════════════════════════════════════════════════════════════════
+const BASE_SMILE = 0.25;
+
+const EXPRESSIONS = {
+  neutral: {
+    morphs:   { mouthSmile: BASE_SMILE, mouthOpen: 0 },
+    headTilt: 0, headNod: 0, headTurn: 0, bodyLean: 0,
+    speed:    0.8,
+  },
+  happy: {
+    morphs:   { mouthSmile: 1, mouthOpen: 0.2 },       // ابتسامة كاملة
+    headTilt: 0.05, headNod: 0.05, headTurn: 0, bodyLean: 0.03,
+    speed:    1.2,
+  },
+  sad: {
+    morphs:   { mouthSmile: BASE_SMILE, mouthOpen: 0 }, // مبتسم بس رأسه للأسفل
+    headTilt: 0, headNod: -0.12, headTurn: 0, bodyLean: -0.04,
+    speed:    0.5,
+  },
+  angry: {
+    morphs:   { mouthSmile: BASE_SMILE, mouthOpen: 0.1 },
+    headTilt: 0, headNod: -0.08, headTurn: 0, bodyLean: 0.06,
+    speed:    1.0,
+  },
+  surprised: {
+    morphs:   { mouthSmile: BASE_SMILE, mouthOpen: 0.8 },
+    headTilt: 0, headNod: 0.1, headTurn: 0, bodyLean: -0.05,
+    speed:    2.0,
+  },
+  fearful: {
+    morphs:   { mouthSmile: BASE_SMILE, mouthOpen: 0.3 },
+    headTilt: 0.08, headNod: 0.08, headTurn: -0.06, bodyLean: -0.06,
+    speed:    1.5,
+  },
+  thinking: {
+    morphs:   { mouthSmile: BASE_SMILE, mouthOpen: 0 },
+    headTilt: 0.1, headNod: -0.05, headTurn: 0.08, bodyLean: 0,
+    speed:    0.6,
+  },
+  empathetic: {
+    morphs:   { mouthSmile: 0.45, mouthOpen: 0 },       // ابتسامة أدفأ
+    headTilt: 0.08, headNod: -0.03, headTurn: 0, bodyLean: 0.04,
+    speed:    0.7,
+  },
+  disgusted: {
+    morphs:   { mouthSmile: BASE_SMILE, mouthOpen: 0.1 },
+    headTilt: -0.06, headNod: -0.06, headTurn: -0.1, bodyLean: -0.03,
+    speed:    0.9,
+  },
+};
+
+// ══════════════════════════════════════════════════════════════════════════
+// تحليل نص الـ AI
+// ══════════════════════════════════════════════════════════════════════════
+export const detectExpressionFromText = (text) => {
+  if (!text) return 'neutral';
+  const t = text.toLowerCase();
+  const patterns = {
+    happy:      ['سعيد','فرح','ممتاز','رائع','يسعدني','تحسن','إيجابي','happy','great','wonderful','😊','😄','🎉'],
+    sad:        ['حزين','آسف','مؤلم','صعب','أعتذر','للأسف','sad','sorry','unfortunately','😢','😞'],
+    angry:      ['غاضب','زعلان','محبط','غير مقبول','angry','frustrated','😠'],
+    surprised:  ['مفاجأة','لم أتوقع','واو','مذهل','wow','really','surprising','😲'],
+    fearful:    ['خوف','قلق','خطر','أخشى','تحذير','fear','worried','afraid','😨'],
+    thinking:   ['دعني أفكر','حسناً','ربما','أعتقد','لنفكر','hmm','perhaps','consider','🤔'],
+    empathetic: ['أفهمك','أشعر بك','هذا صعب','أنا هنا','أتفهم','understand','I\'m here','🥺'],
+    disgusted:  ['مقزز','لا أوافق','رفض','disgusting','unacceptable'],
+  };
+  for (const [expr, words] of Object.entries(patterns)) {
+    if (words.some(w => t.includes(w))) return expr;
+  }
+  return 'neutral';
+};
+
+const TRANSITION  = 0.5;
+const BLINK_NAMES = ['eyesClosed','eyeBlinkLeft','eyeBlinkRight','EyesClosed','blink'];
+const IDLE_CYCLE  = ['neutral','thinking','empathetic','neutral','neutral'];
+
+// ══════════════════════════════════════════════════════════════════════════
+// المكوّن
+// ══════════════════════════════════════════════════════════════════════════
+const DoctorRobotAvatar = ({
+  avatarUrl      = '/69530adc0ca398caeab557ae.glb',
+  aiText         = '',
+  containerStyle = {},
 }) => {
-  const canvasRef = useRef(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const canvasRef         = useRef(null);
+  const eyeMeshesRef      = useRef([]);
+  const allMorphMeshesRef = useRef([]);
+  const headBoneRef       = useRef(null);
+  const spineBoneRef      = useRef(null);
 
+  const exprStateRef = useRef({
+    current:    { ...EXPRESSIONS.neutral },
+    target:     { ...EXPRESSIONS.neutral },
+    progress:   1,
+    targetName: 'neutral',
+  });
+
+  const blinkRef     = useRef({ isBlinking: false, progress: 0, nextBlink: 3, elapsed: 0 });
+  const idleTimerRef = useRef(null);
+
+  const [loading, setLoading]         = useState(true);
+  const [error, setError]             = useState(null);
+  const [currentExpr, setCurrentExpr] = useState('neutral');
+
+  // ── تطبيق state على الـ meshes والعظام ────────────────────────────────
+  const applyCurrentState = useCallback((state) => {
+    for (const { mesh, dict } of allMorphMeshesRef.current) {
+      if (!mesh.morphTargetInfluences) continue;
+      for (const [key, idx] of Object.entries(dict)) {
+        if (!BLINK_NAMES.includes(key)) {
+          mesh.morphTargetInfluences[idx] = state.morphs?.[key] ?? 0;
+        }
+      }
+    }
+    if (headBoneRef.current) {
+      headBoneRef.current.rotation.z = state.headTilt ?? 0;
+      headBoneRef.current.rotation.x = state.headNod  ?? 0;
+      headBoneRef.current.rotation.y = state.headTurn ?? 0;
+    }
+    if (spineBoneRef.current) {
+      spineBoneRef.current.rotation.x = state.bodyLean ?? 0;
+    }
+  }, []);
+
+  // ── interpolate ────────────────────────────────────────────────────────
+  const lerpState = (a, b, t) => {
+    const ease = t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2,2)/2;
+    const lerp  = (x, y) => x + (y - x) * ease;
+    return {
+      morphs: {
+        mouthSmile: lerp(a.morphs?.mouthSmile ?? BASE_SMILE, b.morphs?.mouthSmile ?? BASE_SMILE),
+        mouthOpen:  lerp(a.morphs?.mouthOpen  ?? 0,          b.morphs?.mouthOpen  ?? 0),
+      },
+      headTilt:  lerp(a.headTilt  ?? 0, b.headTilt  ?? 0),
+      headNod:   lerp(a.headNod   ?? 0, b.headNod   ?? 0),
+      headTurn:  lerp(a.headTurn  ?? 0, b.headTurn  ?? 0),
+      bodyLean:  lerp(a.bodyLean  ?? 0, b.bodyLean  ?? 0),
+    };
+  };
+
+  // ── تغيير التعبير ─────────────────────────────────────────────────────
+  const changeExpression = useCallback((name) => {
+    const es = exprStateRef.current;
+    es.current    = lerpState(es.current, EXPRESSIONS[es.targetName] || EXPRESSIONS.neutral, 1);
+    es.target     = EXPRESSIONS[name] || EXPRESSIONS.neutral;
+    es.targetName = name;
+    es.progress   = 0;
+    setCurrentExpr(name);
+  }, []);
+
+  // ── نص الـ AI ─────────────────────────────────────────────────────────
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const container = canvas.parentElement;
-    
-    // ── Scene ──────────────────────────────────────────────────────────
-    const scene = new THREE.Scene();
+    if (!aiText) return;
+    changeExpression(detectExpressionFromText(aiText));
+    const t = setTimeout(() => changeExpression('neutral'), 5000);
+    return () => clearTimeout(t);
+  }, [aiText, changeExpression]);
 
-    // ── Camera ─────────────────────────────────────────────────────────
-    const camera = new THREE.PerspectiveCamera(
-      35,
-      container.clientWidth / container.clientHeight, 
-      0.1, 
-      1000
-    );
+  // ── Idle تلقائي ───────────────────────────────────────────────────────
+  useEffect(() => {
+    let idx = 0;
+    const schedule = () => {
+      idleTimerRef.current = setTimeout(() => {
+        if (!aiText) {
+          idx = (idx + 1) % IDLE_CYCLE.length;
+          changeExpression(IDLE_CYCLE[idx]);
+          setTimeout(() => changeExpression('neutral'), 2500);
+        }
+        schedule();
+      }, 7000 + Math.random() * 5000);
+    };
+    schedule();
+    return () => clearTimeout(idleTimerRef.current);
+  }, [aiText, changeExpression]);
+
+  // ── Three.js ──────────────────────────────────────────────────────────
+  useEffect(() => {
+    const canvas    = canvasRef.current;
+    const container = canvas.parentElement;
+
+    const scene  = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(35, container.clientWidth / container.clientHeight, 0.1, 1000);
     camera.position.set(0, 1.72, 0.85);
     camera.lookAt(0, 1.68, 0);
-    
-    // ── Renderer ───────────────────────────────────────────────────────
-    const renderer = new THREE.WebGLRenderer({ 
-      canvas, 
-      antialias: true,
-      alpha: true 
-    });
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.type    = THREE.PCFSoftShadowMap;
 
-    // ── Environment ────────────────────────────────────────────────────
-    const bgCanvas = document.createElement('canvas');
-    bgCanvas.width = 2;
-    bgCanvas.height = 512;
-    const bgCtx = bgCanvas.getContext('2d');
-    const grad = bgCtx.createLinearGradient(0, 0, 0, 512);
-    grad.addColorStop(0,   '#1b2a3b');
-    grad.addColorStop(0.5, '#243447');
-    grad.addColorStop(1,   '#1a2535');
-    bgCtx.fillStyle = grad;
-    bgCtx.fillRect(0, 0, 2, 512);
-    scene.background = new THREE.CanvasTexture(bgCanvas);
+    // Background
+    const bgCv = document.createElement('canvas');
+    bgCv.width = 2; bgCv.height = 512;
+    const bgCtx = bgCv.getContext('2d');
+    const grad  = bgCtx.createLinearGradient(0, 0, 0, 512);
+    grad.addColorStop(0, '#1b2a3b'); grad.addColorStop(0.5, '#243447'); grad.addColorStop(1, '#1a2535');
+    bgCtx.fillStyle = grad; bgCtx.fillRect(0, 0, 2, 512);
+    scene.background = new THREE.CanvasTexture(bgCv);
 
-    const floorGeo = new THREE.PlaneGeometry(6, 6);
-    const floor = new THREE.Mesh(floorGeo, new THREE.MeshStandardMaterial({ color: 0x5c3d2e, roughness: 0.8 }));
-    floor.rotation.x = -Math.PI / 2;
+    // Environment
+    const addMesh = (geo, mat, x, y, z, rx = 0) => {
+      const m = new THREE.Mesh(geo, mat);
+      m.position.set(x, y, z);
+      if (rx) m.rotation.x = rx;
+      scene.add(m);
+      return m;
+    };
+    const floor = addMesh(new THREE.PlaneGeometry(6,6), new THREE.MeshStandardMaterial({ color: 0x5c3d2e, roughness: 0.8 }), 0, 0, 0, -Math.PI/2);
     floor.receiveShadow = true;
-    scene.add(floor);
+    addMesh(new THREE.PlaneGeometry(6,4),          new THREE.MeshStandardMaterial({ color: 0x8fa3b1, roughness: 0.9 }), 0, 2, -1.5);
+    addMesh(new THREE.BoxGeometry(0.85,0.65,0.04), new THREE.MeshStandardMaterial({ color: 0x3b2a1a }), -0.6, 2.1, -1.47);
+    addMesh(new THREE.PlaneGeometry(0.75,0.55),    new THREE.MeshStandardMaterial({ color: 0x7fb3c8 }), -0.6, 2.1, -1.44);
+    const lm = new THREE.MeshStandardMaterial({ color: 0x2c2c2c });
+    const tm = new THREE.MeshStandardMaterial({ color: 0x6b4226, roughness: 0.7 });
+    const sm = new THREE.MeshStandardMaterial({ color: 0xf5deb3, side: THREE.DoubleSide, emissive: 0xf5deb3, emissiveIntensity: 0.15 });
+    addMesh(new THREE.CylinderGeometry(0.06,0.08,0.04,16), lm, 0.9, 0.84, -0.6);
+    addMesh(new THREE.CylinderGeometry(0.015,0.015,0.5,8), lm, 0.9, 1.09, -0.6);
+    addMesh(new THREE.ConeGeometry(0.12,0.15,16,1,true),   sm, 0.9, 1.4,  -0.6);
+    addMesh(new THREE.BoxGeometry(0.7,0.04,0.4),           tm, 0.9, 0.82, -0.6);
 
-    const wall = new THREE.Mesh(
-      new THREE.PlaneGeometry(6, 4),
-      new THREE.MeshStandardMaterial({ color: 0x8fa3b1, roughness: 0.9 })
-    );
-    wall.position.set(0, 2, -1.5);
-    scene.add(wall);
-
-    const frame = new THREE.Mesh(
-      new THREE.BoxGeometry(0.85, 0.65, 0.04),
-      new THREE.MeshStandardMaterial({ color: 0x3b2a1a })
-    );
-    frame.position.set(-0.6, 2.1, -1.47);
-    scene.add(frame);
-
-    const painting = new THREE.Mesh(
-      new THREE.PlaneGeometry(0.75, 0.55),
-      new THREE.MeshStandardMaterial({ color: 0x7fb3c8 })
-    );
-    painting.position.set(-0.6, 2.1, -1.44);
-    scene.add(painting);
-
-    const lampMat = new THREE.MeshStandardMaterial({ color: 0x2c2c2c });
-    const tableMat = new THREE.MeshStandardMaterial({ color: 0x6b4226, roughness: 0.7 });
-
-    const lampBase = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.08, 0.04, 16), lampMat);
-    lampBase.position.set(0.9, 0.84, -0.6);
-    scene.add(lampBase);
-
-    const lampPole = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.5, 8), lampMat);
-    lampPole.position.set(0.9, 1.09, -0.6);
-    scene.add(lampPole);
-
-    const lampShade = new THREE.Mesh(
-      new THREE.ConeGeometry(0.12, 0.15, 16, 1, true),
-      new THREE.MeshStandardMaterial({ color: 0xf5deb3, side: THREE.DoubleSide, emissive: 0xf5deb3, emissiveIntensity: 0.15 })
-    );
-    lampShade.position.set(0.9, 1.4, -0.6);
-    scene.add(lampShade);
-
-    const tableTop = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.04, 0.4), tableMat);
-    tableTop.position.set(0.9, 0.82, -0.6);
-    scene.add(tableTop);
-
-    // ── Lighting ───────────────────────────────────────────────────────
+    // Lighting
     scene.add(new THREE.AmbientLight(0xd6e8f5, 0.5));
+    const kl = new THREE.DirectionalLight(0xfff5e6, 1.1);
+    kl.position.set(0.5, 3, 2); kl.castShadow = true; scene.add(kl);
+    const ll = new THREE.PointLight(0xffd07a, 1.2, 3);
+    ll.position.set(0.9, 1.4, -0.5); scene.add(ll);
+    const fl = new THREE.DirectionalLight(0xc8d8e8, 0.4);
+    fl.position.set(-2, 2, 1); scene.add(fl);
+    const rl = new THREE.DirectionalLight(0x88aacc, 0.5);
+    rl.position.set(0, 2, -2); scene.add(rl);
 
-    const keyLight = new THREE.DirectionalLight(0xfff5e6, 1.1);
-    keyLight.position.set(0.5, 3, 2);
-    keyLight.castShadow = true;
-    scene.add(keyLight);
-
-    const lampLight = new THREE.PointLight(0xffd07a, 1.2, 3);
-    lampLight.position.set(0.9, 1.4, -0.5);
-    scene.add(lampLight);
-
-    const fillLight = new THREE.DirectionalLight(0xc8d8e8, 0.4);
-    fillLight.position.set(-2, 2, 1);
-    scene.add(fillLight);
-
-    const rimLight = new THREE.DirectionalLight(0x88aacc, 0.5);
-    rimLight.position.set(0, 2, -2);
-    scene.add(rimLight);
-
-    // ── Blink System ───────────────────────────────────────────────────
-    // أسماء الـ morph targets الشائعة في Ready Player Me
-    const BLINK_TARGETS = [
-      'eyesClosed',        // الأكثر شيوعاً في RPM
-      'eyeBlinkLeft',
-      'eyeBlinkRight', 
-      'EyesClosed',
-      'blink',
-    ];
-
-    let eyeMeshes = [];       // الـ meshes اللي عندها morph targets للعيون
-    let blinkState = {
-      isBlinking: false,
-      blinkProgress: 0,      // 0 = مفتوح, 1 = مغلق
-      nextBlinkTime: 3,      // ثواني للرمشة الجاية
-      elapsedTime: 0,
-    };
-
-    // دالة لإيجاد الـ morph target index
-    const findBlinkIndex = (mesh) => {
-      if (!mesh.morphTargetDictionary) return null;
-      for (const name of BLINK_TARGETS) {
-        if (mesh.morphTargetDictionary[name] !== undefined) {
-          return { index: mesh.morphTargetDictionary[name], type: 'combined' };
-        }
-      }
-      // جرب Left و Right منفصلين
-      const leftIdx  = mesh.morphTargetDictionary['eyeBlinkLeft'];
-      const rightIdx = mesh.morphTargetDictionary['eyeBlinkRight'];
-      if (leftIdx !== undefined || rightIdx !== undefined) {
-        return { leftIdx, rightIdx, type: 'separate' };
-      }
-      return null;
-    };
-
-    // دالة تطبيق الرمشة على الـ mesh
-    const applyBlink = (mesh, blinkInfo, value) => {
-      if (!mesh.morphTargetInfluences) return;
-      if (blinkInfo.type === 'combined') {
-        mesh.morphTargetInfluences[blinkInfo.index] = value;
-      } else {
-        if (blinkInfo.leftIdx  !== undefined) mesh.morphTargetInfluences[blinkInfo.leftIdx]  = value;
-        if (blinkInfo.rightIdx !== undefined) mesh.morphTargetInfluences[blinkInfo.rightIdx] = value;
-      }
-    };
-
-    // ── Load Avatar ────────────────────────────────────────────────────
-    let avatar = null;
-    let mixer  = null;
+    // Load Avatar
+    let mixer = null;
     const clock = new THREE.Clock();
-    let animationId = null;
+    let animId  = null;
 
-    const loader = new GLTFLoader();
-    loader.load(
-      avatarUrl,
-      (gltf) => {
-        avatar = gltf.scene;
-        scene.add(avatar);
+    new GLTFLoader().load(avatarUrl, (gltf) => {
+      const avatar = gltf.scene;
+      scene.add(avatar);
 
-        avatar.traverse((child) => {
-          if (child.isMesh) {
-            child.castShadow    = true;
-            child.receiveShadow = true;
+      const eyeMeshes      = [];
+      const allMorphMeshes = [];
 
-            // جمع الـ meshes اللي عندها morph targets للعيون
-            const blinkInfo = findBlinkIndex(child);
-            if (blinkInfo) {
-              eyeMeshes.push({ mesh: child, blinkInfo });
-              console.log('✅ Found blink morph target on:', child.name, blinkInfo);
-            }
+      avatar.traverse((child) => {
+        if (child.isBone || child.type === 'Bone') {
+          const n = child.name.toLowerCase();
+          if (n.includes('head') && !headBoneRef.current)  headBoneRef.current  = child;
+          if ((n.includes('spine') || n.includes('chest') || n.includes('neck')) && !spineBoneRef.current)
+            spineBoneRef.current = child;
+        }
+        if (!child.isMesh) return;
+        child.castShadow = child.receiveShadow = true;
+        if (!child.morphTargetDictionary) return;
+
+        allMorphMeshes.push({ mesh: child, dict: child.morphTargetDictionary });
+
+        let blinkInfo = null;
+        for (const name of BLINK_NAMES) {
+          if (child.morphTargetDictionary[name] !== undefined) {
+            blinkInfo = { type: 'combined', index: child.morphTargetDictionary[name] };
+            break;
           }
+        }
+        if (!blinkInfo) {
+          const l = child.morphTargetDictionary['eyeBlinkLeft'];
+          const r = child.morphTargetDictionary['eyeBlinkRight'];
+          if (l !== undefined || r !== undefined)
+            blinkInfo = { type: 'separate', leftIdx: l, rightIdx: r };
+        }
+        if (blinkInfo) eyeMeshes.push({ mesh: child, blinkInfo });
+      });
+
+      if (eyeMeshes.length === 0) {
+        avatar.traverse((child) => {
+          const n = child.name.toLowerCase();
+          if (n.includes('eye') && !n.includes('brow') && !n.includes('lash'))
+            eyeMeshes.push({ mesh: child, blinkInfo: { type: 'scale' } });
         });
-
-        // لو ملقاش morph targets، هنعمل blink بطريقة بديلة (scale العيون)
-        if (eyeMeshes.length === 0) {
-          console.warn('⚠️ No blink morph targets found — using fallback scale method');
-          avatar.traverse((child) => {
-            const name = child.name.toLowerCase();
-            if (name.includes('eye') && !name.includes('brow') && !name.includes('lash')) {
-              eyeMeshes.push({ mesh: child, blinkInfo: { type: 'scale' } });
-            }
-          });
-        }
-
-        if (gltf.animations?.length > 0) {
-          mixer = new THREE.AnimationMixer(avatar);
-          mixer.clipAction(gltf.animations[0]).play();
-        }
-
-        setLoading(false);
-      },
-      undefined,
-      (err) => {
-        console.error('GLTFLoader Error:', err);
-        setError('Failed to load avatar');
-        setLoading(false);
       }
-    );
 
-    // ── Animate ────────────────────────────────────────────────────────
+      eyeMeshesRef.current      = eyeMeshes;
+      allMorphMeshesRef.current = allMorphMeshes;
+
+      // تطبيق الابتسامة الأساسية فور التحميل
+      applyCurrentState(EXPRESSIONS.neutral);
+
+      if (gltf.animations?.length > 0) {
+        mixer = new THREE.AnimationMixer(avatar);
+        mixer.clipAction(gltf.animations[0]).play();
+      }
+
+      setLoading(false);
+    },
+    undefined,
+    (err) => { console.error(err); setError('Failed to load avatar'); setLoading(false); });
+
+    // Animate
     const animate = () => {
-      animationId = requestAnimationFrame(animate);
+      animId = requestAnimationFrame(animate);
       const delta = clock.getDelta();
       if (mixer) mixer.update(delta);
 
-      // ── Blink Logic ────────────────────────────────────────────────
-      blinkState.elapsedTime += delta;
-
-      if (!blinkState.isBlinking && blinkState.elapsedTime >= blinkState.nextBlinkTime) {
-        // ابدأ رمشة
-        blinkState.isBlinking    = true;
-        blinkState.blinkProgress = 0;
-        blinkState.elapsedTime   = 0;
-        // الرمشة الجاية بعد 2.5 إلى 5 ثواني (عشوائي = طبيعي)
-        blinkState.nextBlinkTime = 2 + Math.random() * 2;
+      // Expression transition
+      const es = exprStateRef.current;
+      if (es.progress < 1) {
+        const speed = es.target.speed ?? 1;
+        es.progress = Math.min(1, es.progress + (delta / TRANSITION) * speed);
+        applyCurrentState(lerpState(es.current, es.target, es.progress));
       }
 
-      if (blinkState.isBlinking) {
-        blinkState.blinkProgress += delta / 0.08; // سرعة الرمشة (0.08 ثانية للإغلاق)
+      // Blink
+      const b = blinkRef.current;
+      b.elapsed += delta;
+      if (!b.isBlinking && b.elapsed >= b.nextBlink) {
+        b.isBlinking = true; b.progress = 0; b.elapsed = 0;
+        b.nextBlink  = 2 + Math.random() * 2;
+      }
+      if (b.isBlinking) {
+        b.progress += delta / 0.08;
+        let v;
+        if      (b.progress < 1)   v = Math.sin(b.progress * Math.PI / 2);
+        else if (b.progress < 1.4) v = 1;
+        else if (b.progress < 2.4) v = 1 - Math.sin((b.progress - 1.4) * Math.PI / 2);
+        else { v = 0; b.isBlinking = false; }
 
-        let blinkValue;
-        if (blinkState.blinkProgress < 1) {
-          // مرحلة الإغلاق — easing ناعم
-          blinkValue = Math.sin(blinkState.blinkProgress * Math.PI / 2);
-        } else if (blinkState.blinkProgress < 1.4) {
-          // مرحلة البقاء مغلق لحظة
-          blinkValue = 1;
-        } else if (blinkState.blinkProgress < 2.4) {
-          // مرحلة الفتح
-          blinkValue = 1 - Math.sin((blinkState.blinkProgress - 1.4) * Math.PI / 2);
-        } else {
-          // انتهت الرمشة
-          blinkValue = 0;
-          blinkState.isBlinking = false;
-        }
-
-        // طبّق على كل الـ eye meshes
-        for (const { mesh, blinkInfo } of eyeMeshes) {
-          if (blinkInfo.type === 'scale') {
-            // fallback: ضغط العين على محور Y
-            mesh.scale.y = 1 - blinkValue * 0.95;
-          } else {
-            applyBlink(mesh, blinkInfo, blinkValue);
+        for (const { mesh, blinkInfo } of eyeMeshesRef.current) {
+          if (!mesh.morphTargetInfluences) continue;
+          if      (blinkInfo.type === 'scale')    mesh.scale.y = 1 - v * 0.95;
+          else if (blinkInfo.type === 'combined') mesh.morphTargetInfluences[blinkInfo.index] = v;
+          else {
+            if (blinkInfo.leftIdx  !== undefined) mesh.morphTargetInfluences[blinkInfo.leftIdx]  = v;
+            if (blinkInfo.rightIdx !== undefined) mesh.morphTargetInfluences[blinkInfo.rightIdx] = v;
           }
         }
       }
@@ -272,7 +347,6 @@ const DoctorRobotAvatar = ({
     };
     animate();
 
-    // ── Resize ─────────────────────────────────────────────────────────
     const handleResize = () => {
       camera.aspect = container.clientWidth / container.clientHeight;
       camera.updateProjectionMatrix();
@@ -282,45 +356,51 @@ const DoctorRobotAvatar = ({
 
     return () => {
       window.removeEventListener('resize', handleResize);
-      cancelAnimationFrame(animationId);
+      cancelAnimationFrame(animId);
       renderer.dispose();
       scene.clear();
+      headBoneRef.current  = null;
+      spineBoneRef.current = null;
     };
-  }, [avatarUrl]);
+  }, [avatarUrl, applyCurrentState]);
 
   return (
     <div style={{ width: '100%', height: '100%', position: 'relative', ...containerStyle }}>
       <canvas ref={canvasRef} style={{ display: 'block', width: '100%', height: '100%' }} />
+
+      {!loading && !error && currentExpr !== 'neutral' && (
+        <div style={badgeStyle}>
+          {{ happy:'😊', sad:'😢', angry:'😠', surprised:'😲', fearful:'😨', thinking:'🤔', empathetic:'🥺', disgusted:'🤢' }[currentExpr]}
+        </div>
+      )}
+
       {loading && (
         <div style={overlayStyle}>
           <Spinner />
           <span style={{ marginTop: 10, fontSize: 14 }}>جاري التحميل...</span>
         </div>
       )}
-      {error && (
-        <div style={{ ...overlayStyle, color: '#ff6b6b' }}>❌ {error}</div>
-      )}
+      {error && <div style={{ ...overlayStyle, color: '#ff6b6b' }}>❌ {error}</div>}
     </div>
   );
 };
 
+const badgeStyle = {
+  position: 'absolute', top: 12, right: 12,
+  fontSize: 26, width: 42, height: 42,
+  background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)',
+  borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+};
+
 const Spinner = () => (
-  <div style={{
-    width: 32, height: 32,
-    border: '3px solid rgba(255,255,255,0.15)',
-    borderTop: '3px solid #7fb3c8',
-    borderRadius: '50%',
-    animation: 'spin 0.9s linear infinite',
-  }}>
+  <div style={{ width: 32, height: 32, border: '3px solid rgba(255,255,255,0.15)', borderTop: '3px solid #7fb3c8', borderRadius: '50%', animation: 'spin 0.9s linear infinite' }}>
     <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
   </div>
 );
 
 const overlayStyle = {
-  position: 'absolute', top: '50%', left: '50%',
-  transform: 'translate(-50%, -50%)',
-  color: 'white', background: 'rgba(0,0,0,0.6)',
-  padding: '20px 28px', borderRadius: '12px',
+  position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
+  color: 'white', background: 'rgba(0,0,0,0.6)', padding: '20px 28px', borderRadius: '12px',
   display: 'flex', flexDirection: 'column', alignItems: 'center',
 };
 
