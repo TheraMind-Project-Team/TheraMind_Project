@@ -1,34 +1,79 @@
 /* src/components/CtaSection/CtaSection.css */
+
+/* انيميشن لتحريك التدرج اللوني في الخلفية */
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
 .cta-section {
-    padding: 50px 40px 80px 40px; /* زيادة المساحة السفلية */
-    padding-top: 100px;
-    padding-bottom: 50px;
-    background-color: var(--f7f7f7); 
+    padding: 100px 40px;
+    background-color: #f7f7f7; /* الحفاظ على لون الخلفية */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
 }
 
 .cta-content {
-    background-color: var(--light-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 40px;
-    text-align: center;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    /* تغيير الخلفية لتكون تدرج لوني متحرك ببطء */
+    background: linear-gradient(-45deg, #ffffff, #f0f8ff, #e6f7ff, #ffffff);
+    background-size: 400% 400%;
+    animation: gradientBG 10s ease infinite;
     
+    border: 1px solid rgba(17, 120, 180, 0.1); /* حدود زرقاء خفيفة */
+    border-radius: 24px; /* حواف دائرية أكثر */
+    padding: 60px 80px; /* زيادة الـ padding الداخلي */
+    text-align: center;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+    max-width: 900px;
+    width: 100%;
+    
+    /* انيميشن الظهور */
     opacity: 0;
-    transform: scale(0.95);
-    animation: zoomIn 0.5s 0.7s forwards;
+    transform: scale(0.9);
+    animation: zoomIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.8s forwards;
+    
+    transition: box-shadow 0.4s ease, transform 0.4s ease;
+    cursor: pointer; /* ايحاء بالقابلية للنقر على القسم كله */
+}
+
+/* تأثير تحويم على بطاقة الـ CTA */
+.cta-content:hover {
+    box-shadow: 0 20px 50px rgba(17, 120, 180, 0.15);
+    transform: translateY(-5px) scale(1.01);
 }
 
 .cta-title {
-    font-size: 1.5rem;
-    font-weight: 700;
+    font-size: 2.2rem; /* تكبير العنوان */
+    font-weight: 800;
     color: var(--primary-color);
-    margin-bottom: 15px;
+    margin-bottom: 20px;
+    
+    /* انيميشن دخول خفيف للنص داخل البطاقة */
+    opacity: 0;
+    animation: fadeInUpSmooth 0.5s ease-out 1.2s forwards;
 }
 
 .cta-text {
-    font-size: 1rem;
+    font-size: 1.15rem;
     color: var(--subtitle-color);
-    max-width: 800px;
+    max-width: 700px;
     margin: 0 auto;
+    line-height: 1.7;
+    
+    /* انيميشن دخول خفيف */
+    opacity: 0;
+    animation: fadeInUpSmooth 0.5s ease-out 1.4s forwards;
+}
+
+/* إضافة استجابة للـ CTA */
+@media (max-width: 768px) {
+    .cta-content {
+        padding: 40px 20px;
+    }
+    .cta-title {
+        font-size: 1.8rem;
+    }
 }

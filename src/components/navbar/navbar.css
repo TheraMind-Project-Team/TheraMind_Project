@@ -29,12 +29,17 @@
 }
 
 /* ------------------- اللوجو ------------------- */
+.navbar-logo a {
+    text-decoration: none; /* ← إزالة الخط */
+}
+
 .navbar-logo .logo-text {
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--primary-color);
     display: flex;
     align-items: center;
+    text-decoration: none;
 }
 
 .navbar-logo .logo-icon {
@@ -117,7 +122,7 @@
     color: #57b7e4;
 }
 
-/* ------------------- القسم الأيمن (يتغير حسب حالة الدخول) ------------------- */
+/* ------------------- القسم الأيمن ------------------- */
 .navbar-right {
     display: flex;
     align-items: center;
@@ -152,7 +157,6 @@
     box-shadow: 0 0 0 3px rgba(132, 209, 240, 0.2);
 }
 
-/* أيقونة البحث داخل الحقل */
 .search-bar::before {
     content: "🔍";
     position: absolute;
@@ -218,7 +222,7 @@
     background: #fecaca;
 }
 
-/* ------------------- أزرار Log in و Sign up (قبل الدخول) ------------------- */
+/* ------------------- أزرار Log in و Sign up ------------------- */
 .navbar-actions {
     display: flex;
     gap: 12px;
@@ -255,94 +259,36 @@
 
 /* ------------------- Media Queries ------------------- */
 @media (max-width: 1200px) {
-    .search-input {
-        width: 240px;
-    }
+    .search-input { width: 240px; }
 }
 
 @media (max-width: 1024px) {
-    .navbar-container {
-        padding: 10px 30px;
-    }
-
-    .search-input {
-        width: 220px;
-    }
-
-    .navbar-right {
-        gap: 15px;
-    }
+    .navbar-container { padding: 10px 30px; }
+    .search-input { width: 220px; }
+    .navbar-right { gap: 15px; }
 }
 
 @media (max-width: 992px) {
-    .navbar-container {
-        padding: 10px 20px;
-    }
-
-    .navbar-links {
-        gap: 20px;
-    }
-
-    .search-input {
-        width: 200px;
-    }
+    .navbar-container { padding: 10px 20px; }
+    .navbar-links { gap: 20px; }
+    .search-input { width: 200px; }
 }
 
 @media (max-width: 768px) {
-    .navbar-container {
-        flex-direction: column;
-        gap: 16px;
-        padding: 16px 20px;
-    }
-
-    .navbar-links {
-        margin: 0;
-        order: 3;
-        width: 100%;
-        justify-content: center;
-    }
-
-    .navbar-right,
-    .navbar-actions {
-        order: 2;
-        width: 100%;
-        justify-content: center;
-    }
-
-    .search-input {
-        width: 100%;
-        max-width: 320px;
-    }
-
-    .robot-link,
-    .profile-btn,
-    .logout-btn {
-        padding: 10px 14px;
-        font-size: 14px;
-    }
+    .navbar-container { flex-direction: column; gap: 16px; padding: 16px 20px; }
+    .navbar-links { margin: 0; order: 3; width: 100%; justify-content: center; }
+    .navbar-right, .navbar-actions { order: 2; width: 100%; justify-content: center; }
+    .search-input { width: 100%; max-width: 320px; }
+    .robot-link, .profile-btn, .logout-btn { padding: 10px 14px; font-size: 14px; }
 }
 
 @media (max-width: 480px) {
-    .navbar-links {
-        flex-direction: column;
-        gap: 12px;
-        text-align: center;
-    }
-
-    .navbar-right {
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    .search-input {
-        width: 100%;
-    }
+    .navbar-links { flex-direction: column; gap: 12px; text-align: center; }
+    .navbar-right { flex-direction: column; gap: 12px; }
+    .search-input { width: 100%; }
 }
 
 /* ------------------- Keyframes ------------------- */
 @keyframes fadeIn {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    to { opacity: 1; transform: translateY(0); }
 }

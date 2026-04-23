@@ -1,183 +1,368 @@
-/* src/components/HeroSection/HeroSection.css - الكود المُعدل */
+/* --- Root Variables (للتأكد من الألوان) --- */
+:root {
+    --primary-color: #1178b4;
+    --light-bg: #ffffff;
+    --subtitle-color: #555555;
+    --blue-bg-light: #e6f7ff;
+}
+
+/* --- Loader Styles --- */
+.loader-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.loader-content {
+    text-align: center;
+}
+
+.brain-icon-wrapper {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+
+.loader-brain {
+    font-size: 4rem;
+    color: var(--primary-color);
+    animation: brainFloat 2s ease-in-out infinite;
+    position: relative;
+    z-index: 2;
+}
+
+.pulse-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    background-color: rgba(17, 120, 180, 0.2);
+    border-radius: 50%;
+    animation: ripple 2s linear infinite;
+}
+
+.loader-text {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #333;
+    margin-top: 15px;
+    letter-spacing: 1px;
+}
+
+.loader-text span {
+    color: var(--primary-color);
+}
+
+.progress-bar-container {
+    width: 220px;
+    height: 4px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    margin: 25px auto 0;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    width: 0;
+    height: 100%;
+    background-color: var(--primary-color);
+    animation: loadProgress 2.4s ease-in-out forwards;
+}
+
+.fade-in-page {
+    animation: pageReveal 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* --- Keyframes --- */
+@keyframes brainFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+@keyframes ripple {
+    0% { width: 60px; height: 60px; opacity: 1; }
+    100% { width: 160px; height: 160px; opacity: 0; }
+}
+
+@keyframes loadProgress {
+    0% { width: 0%; }
+    100% { width: 100%; }
+}
+
+@keyframes pageReveal {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Hero Animations (تعديلات على الكود اللي فات لضمان السلاسة) --- */
+.hero-title, .hero-description, .tagline {
+    opacity: 0;
+    animation: fadeInUpSmooth 0.8s ease-out forwards;
+}
+
+.hero-title { animation-delay: 0.2s; }
+.hero-description { animation-delay: 0.4s; }
+.btn-get-started { 
+    opacity: 0;
+    animation: fadeInUpSmooth 0.8s ease-out 0.6s forwards;
+    transition: all 0.3s ease;
+}
+
+@keyframes fadeInUpSmooth {
+    from { opacity: 0; transform: translateY(25px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.hero-main-image {
+    animation: imageFloat 6s ease-in-out infinite;
+    transition: transform 0.5s ease;
+}
+
+@keyframes imageFloat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.03) translateY(-10px); }
+}
+/* src/components/HeroSection/HeroSection.css */
+
+/* --- تعريف الانيميشنز الجديدة في بداية الملف --- */
+
+/* حركة دخول ناعمة من الأسفل مع تلاشي */
+@keyframes fadeInUpSmooth {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* حركة دخول من اليسار ناعمة */
+@keyframes fadeInLeftSmooth {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* انيميشن خفيف للصورة (تخبير وتصغير ببطء شديد) */
+@keyframes imageFloat {
+    0%, 100% { transform: scale(1) translateY(0); }
+    50% { transform: scale(1.02) translateY(-5px); }
+}
+
+/* انيميشن توهج للزر */
+@keyframes buttonPulse {
+    0% { box-shadow: 0 0 0 0 rgba(17, 120, 180, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(17, 120, 180, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(17, 120, 180, 0); }
+}
+
 
 /* ------------------- تنسيق الحاوية الرئيسية ------------------- */
 .hero-section {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    /* زيادة الـ padding الأفقي قليلاً ليتناسب مع عرض التصميم */
-    padding: 100px 80px 100px 80px; 
-    gap: 80px; /* زيادة الفراغ بين المحتوى والصورة */
+    padding: 100px 80px; 
+    gap: 80px;
     background-color: var(--light-bg);
-    border-bottom: 1px solid #333333; /* أو استخدمي لون رمادي داكن: #555555 */
-    padding-bottom: 50px; /* زيادة مسافة أسفل المحتوى قبل الخط الفاصل */
-    margin-bottom: 0;
+    border-bottom: 1px solid #333333;
+    padding-bottom: 80px; /* زيادة التباعد قليلاً */
+    overflow: hidden; /* لمنع ظهور شريطة التمرير أثناء الانيميشن */
 }
 
 .hero-content {
     flex: 1;
-    max-width: 45%; /* تقليل العرض قليلاً لترك مساحة أكبر للصورة */
+    max-width: 45%;
+    /* إضافة منظور للأطفال لعمل تأثيرات 3D مستقبلاً إذا أردتِ */
+    perspective: 1000px; 
 }
 
 /* ------------------- محتوى الترحيب ------------------- */
 
 .tagline {
-    /* شريط Tagline (Your Digital Mental Health Companion) */
     color: var(--primary-color);
     background-color: var(--blue-bg-light); 
     display: inline-flex;
     align-items: center;
-    padding: 5px 15px; /* تصغير الـ padding قليلاً */
+    padding: 8px 18px; /* تكبير قليلاً */
     border-radius: 20px;
-    margin-bottom: 25px; /* زيادة المسافة عن العنوان */
+    margin-bottom: 25px;
     font-weight: 600;
     font-size: 0.95rem;
 
+    /* استخدام الانيميشن الجديد */
     opacity: 0;
-    animation: slideInLeft 0.7s forwards;
+    animation: fadeInLeftSmooth 0.6s ease-out forwards;
+}
+
+.tagline-icon {
+    margin-right: 8px;
+    /* انيميشن خفيف للأيقونة نفسها */
+    animation: pulse 2s infinite; 
 }
 
 .hero-title {
     font-size: 3.5rem;
     font-weight: 800;
-    line-height: 1.15; /* زيادة الارتفاع قليلاً */
+    line-height: 1.15;
     margin-bottom: 20px;
+    
+    /* استخدام الانيميشن الجديد مع تأخير */
     opacity: 0;
-    animation: slideInLeft 0.7s 0.2s forwards;
+    animation: fadeInLeftSmooth 0.6s ease-out 0.2s forwards;
 }
+
+.highlight {
+    color: var(--primary-color);
+    position: relative;
+    display: inline-block;
+}
+/* إضافة خط سفلي متحرك تحت كلمة TheraMind عند التحميل */
+.highlight::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 3px;
+    bottom: 0;
+    left: 0;
+    background-color: var(--primary-color);
+    transition: width 0.5s ease-out 0.8s;
+}
+.hero-section:hover .highlight::after { /* يبدأ بالعمل عند تحميل السيكشن */
+    width: 100%;
+}
+
 
 .hero-description {
     font-size: 1.2rem;
     color: var(--subtitle-color);
-    margin-bottom: 40px; /* زيادة المسافة عن الزر */
+    margin-bottom: 40px;
+    
+    /* استخدام الانيميشن الجديد مع تأخير أكبر */
     opacity: 0;
-    animation: slideInLeft 0.7s 0.4s forwards;
+    animation: fadeInLeftSmooth 0.6s ease-out 0.4s forwards;
 }
 
 /* ------------------- زر "Get Started" ------------------- */
 .btn-get-started {
-    padding: 12px 30px;
+    padding: 15px 35px; /* تكبير الزر قليلاً */
     background-color: var(--primary-color);
-    color: #1178b4;
+    color: white; /* تغيير لون النص للأبيض للتباين */
     border: none;
-    border-radius: 8px;
+    border-radius: 50px; /* حواف دائرية بالكامل مثل ستايل مودرن */
     font-size: 1.1rem;
     font-weight: 700;
     cursor: pointer;
     
-    /* ظل الأزرق القوي والمميز في التصميم */
-    box-shadow: 0 8px 15px rgba(63, 81, 181, 0.4); 
-    transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s; /* إضافة transition للظل */
+    box-shadow: 0 4px 15px rgba(17, 120, 180, 0.4); 
+    
+    /* إضافة Transition لكل الخواص لجعل الـ hover ناعم */
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
     
     opacity: 0;
-    animation: zoomIn 0.5s 0.6s forwards;
+    /* انيميشن الظهور + انيميشن النبض المستمر */
+    animation: fadeInUpSmooth 0.6s ease-out 0.6s forwards, buttonPulse 2s infinite 1.2s;
 }
+
 .hero-note {
     font-size: 0.85rem;
     color: var(--subtitle-color);
-    margin-top: 15px;
+    margin-top: 20px;
+    opacity: 0;
+    animation: fadeIn 1s ease-out 1s forwards; /* ظهور هادئ جداً */
 }
-
-/* ------------------- حاوية الصورة الفنية ------------------- */
-/* src/components/HeroSection/HeroSection.css */
 
 /* ------------------- حاوية الصورة (الجزء الأيمن) ------------------- */
 .hero-image-container {
     flex: 1;
     display: flex;
-    justify-content: flex-end; /* الصورة تميل قليلاً لليمين في التصميم */
+    justify-content: flex-end;
     align-items: center; 
     padding: 0; 
+    position: relative;
 }
+
+/* إضافة شكل هندسي خلف الصورة كديكور متحرك (اختياري ولكن يعطي لمسة نتفليكس) */
+.hero-image-container::before {
+    content: '';
+    position: absolute;
+    width: 110%;
+    height: 110%;
+    background: rgba(17, 120, 180, 0.05);
+    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; /* شكل عضوي */
+    z-index: -1;
+    animation: morphProfile 15s linear infinite; /* حركة دوران وتشكل ببطء */
+}
+
+@keyframes morphProfile {
+    0% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+    25% { border-radius: 58% 42% 75% 25% / 76% 46% 54% 24%; }
+    50% { border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%; }
+    75% { border-radius: 33% 67% 58% 42% / 63% 68% 32% 37%; }
+    100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+}
+
 
 /* ------------------- تنسيق الصورة الحقيقية (<img>) ------------------- */
 .hero-main-image {
     width: 100%;
-    /* تثبيت الأبعاد لتكون قريبة من نسبة التصميم الأصلي */
     max-width: 600px; 
-    height: 450px; 
+    height: auto; /* ترك الارتفاع تلقائي للحفاظ على النسبة */
     
-    /* ضمان ملء الصورة للحجم المحدد دون تشويه */
     object-fit: cover; 
     
-    /* الحدود والحواف والظل */
-    border-radius: 15px;
+    border-radius: 20px; /* حواف أنعم */
     
-    /* هذا الظل القوي هو مفتاح مطابقة شكل الصورة */
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25); 
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2); 
     
-    /* للحفاظ على الانيميشن */
-    transform: scale(0.9);
+    /* تطبيق انيميشن الظهور ثم انيميشن الطفو المستمر */
     opacity: 0;
-    animation: scaleIn 0.7s 0.3s forwards;
+    transform: translateY(30px) scale(0.9);
+    animation: fadeInUpSmooth 0.8s ease-out 0.3s forwards, imageFloat 6s ease-in-out infinite 1.1s;
+    
+    transition: transform 0.5s ease, box-shadow 0.5s ease;
 }
 
 
-/* ------------------- تنسيقات المحتوى (للتأكد من التباعد) ------------------- */
-.hero-content {
-    flex: 1;
-    max-width: 45%; 
-    z-index: 2; /* لضمان ظهور النصوص فوق جزء من الصورة إذا لزم الأمر */
-}
-
-/* ------------------- تأثير التحويم على الزر (للتذكرة) ------------------- */
+/* ------------------- تأثير التحويم على الزر ------------------- */
 .btn-get-started:hover {
-    background-color: #0786eefa;
-    transform: translateY(-2px); 
-    box-shadow: 0 10px 20px rgba(37, 74, 194, 0.808); 
-    color: black;
+    background-color: #0d6699; /* لون أغمق قليلاً من نفس الدرجة */
+    transform: translateY(-5px) scale(1.05); /* يرتفع ويكبر قليلاً */
+    box-shadow: 0 10px 25px rgba(17, 120, 180, 0.6); 
+    color: white;
+    /* إيقاف انيميشن النبض عند التحويم */
+    animation: fadeInUpSmooth 0.6s ease-out 0.6s forwards; 
 }
 
-/* ------------------- Media Queries (للاستجابة) ------------------- */
+/* تأثير تحويم على الصورة نفسها */
+.hero-main-image:hover {
+    transform: scale(1.03) rotate(-1deg); /* تكبير مائل قليلاً جداً */
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+}
+
+/* الاستجابة (لم نغير فيها الكثير، فقط التأكد من تناسق الانيميشن) */
 @media (max-width: 992px) {
-    /* ... (تعديلات الموبايل التي تجعل الصورة تتوسط الشاشة) ... */
     .hero-image-container {
         justify-content: center;
+        margin-top: 50px;
     }
     .hero-main-image {
-        max-width: 100%;
-        height: 350px;
+        max-width: 80%;
     }
-}
-
-/* ------------------- Media Queries لقسم Hero ------------------- */
-@media (max-width: 1200px) {
-    .hero-section {
-        padding: 80px 40px;
-        gap: 40px;
-    }
-    .hero-title {
-        font-size: 3rem;
-    }
-}
-
-@media (max-width: 992px) {
-    .hero-section {
-        flex-direction: column;
-        text-align: center;
-        padding: 60px 20px;
-    }
-    .hero-content {
-        max-width: 100%;
-        margin-bottom: 30px;
-    }
-    .hero-image-container {
-        justify-content: center;
-        align-items: center;
-    }
-    .hero-placeholder-image { 
-        max-width: 100%;
-        height: 350px;
-        align-items: center; /* توسيط النص في شاشات الموبايل */
-    }
-    .tagline {
-        margin: 0 auto 20px; /* توسيط شريط الـ tagline */
-    }
-    .image-overlay-text {
-        margin-left: 0;
-    }
-}
-@media (max-width: 576px) {
-    .hero-title { font-size: 2.2rem; }
-    .hero-description { font-size: 1rem; }
 }

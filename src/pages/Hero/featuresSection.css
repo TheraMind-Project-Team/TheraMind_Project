@@ -1,104 +1,171 @@
 /* src/components/FeaturesSection/FeaturesSection.css */
+
+/* --- تعريف الانيميشنز الجديدة --- */
+
+@keyframes fadeInUpSmooth {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes cardIntro {
+    from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes iconJump {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
 .features-section {
     background-color: #f7f7f7;
-    padding-top: 80px;
-    padding-bottom: 80px;
+    padding: 100px 40px; /* زيادة الـ padding */
     text-align: center;
-    border-bottom: 1px solid #333333; /* أو استخدمي لون رمادي داكن: #555555 */
-    padding-bottom: 50px; /* زيادة مسافة أسفل المحتوى قبل الخط الفاصل */
-    margin-bottom: 0;
+    border-bottom: 1px solid #333333;
+    overflow: hidden;
+}
+/* 1. ضيفي الـ Keyframes دي في أول الملف فوق خالص */
+@keyframes fadeInUpHeader {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
+/* 2. عدلي الـ section-header بالشكل ده */
 .section-header {
-    margin-bottom: 60px;
+    margin-bottom: 80px;
+    opacity: 1 !important; /* خليها 1 مؤقتاً عشان نضمن إنها ظهرت */
+    animation: fadeInUpHeader 0.8s ease-out forwards;
 }
 
+/* 3. اتأكدي إن الـ section-title والـ section-subtitle مش واخدين opacity 0 */
 .section-title {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 10px;
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 15px;
     color: var(--text-color);
+    position: relative;
+    z-index: 5;
 }
 
 .section-subtitle {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     color: var(--subtitle-color);
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 5;
 }
-
 .features-container {
     display: flex;
     justify-content: space-between;
     gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+    /* إضافة منظور للحاوية لعمل تأثير الـ 3D على البطاقات */
+    perspective: 1500px; 
+    padding-top: 5px;
 }
 
 .feature-card {
     flex: 1;
     background-color: var(--light-bg);
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-    border: 1px solid var(--border-color);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 40px 30px;
+    border-radius: 16px; /* حواف أنعم */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0,0,0,0.03); /* حدود أخف بكثير */
     
-    /* انيميشن الظهور التسلسلي */
+    /* Transition ناعم جداً لكل التأثيرات */
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    
+    /* الانيميشن الأساسي للظهور (on Load) */
     opacity: 0;
-    transform: translateY(20px);
-    animation: fadeInUp 0.5s forwards;
+    animation: cardIntro 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    
+    /* تحضير البطاقة لتأثير الـ 3D */
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
 }
-.features-container .feature-card:nth-child(1) { animation-delay: 0.1s; }
-.features-container .feature-card:nth-child(2) { animation-delay: 0.3s; }
-.features-container .feature-card:nth-child(3) { animation-delay: 0.5s; }
 
+/* تأثير الظهور التسلسلي (تم تحسينه) */
+.features-container .feature-card:nth-child(1) { animation-delay: 0.2s; }
+.features-container .feature-card:nth-child(2) { animation-delay: 0.4s; }
+.features-container .feature-card:nth-child(3) { animation-delay: 0.6s; }
+
+/* --- تأثير التحويم الجامد على البطاقة --- */
 .feature-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.678);
+    /* يرتفع، يميل قليلاً للأمام (3D)، ويصبح الظل أقوى */
+    transform: translateY(-15px) rotateX(5deg) rotateY(-2deg);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    border-color: rgba(17, 120, 180, 0.2); /* تلوين الحدود بخفة */
 }
 
-/* تنسيق الأيقونات (عام) */
+/* تنسيق الأيقونات */
 .icon-wrapper {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
+    width: 70px; /* تكبير قليلاً */
+    height: 70px;
+    border-radius: 20px; /* شكل مربع منحني مودرن */
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 20px;
-    font-size: 1.5rem;
+    margin: 0 auto 30px;
+    font-size: 1.8rem;
+    transition: transform 0.3s ease;
+    
+    /* دفع الأيقونة للأمام في المنظور الـ 3D */
+    transform: translateZ(20px); 
 }
 
-/* تخصيص لون الأيقونة الزرقاء (البطاقة 1 و 2) */
+/* تحريك الأيقونة داخل البطاقة عند التحويم */
+.feature-card:hover .icon-wrapper {
+    animation: iconJump 0.5s ease-out;
+}
+
+/* الألوان (كما هي) */
 .icon-wrapper.blue-icon {
     background-color: #e8eaf6; 
     color: var(--primary-color);
 }
 
-/* تخصيص لون الأيقونة البنفسجية (البطاقة 3 - Available Anytime) */
 .icon-wrapper.purple-icon {
     background-color: #f3e5f5;
-    color: var(--primary-color);
-    /* حدود خفيفة لتأكيد التباين */
-    border: 1px solid rgba(156, 39, 176, 0.1); 
+    color: #9c27b0; /* لون بنفسجي صريح */
 }
 
 .feature-title {
-    font-size: 1.25rem;
+    font-size: 1.4rem;
     font-weight: 700;
+    color: var(--text-color); /* تغيير لـ text-color للوضوح، والتحويم سيغيره */
+    margin-bottom: 15px;
+    transition: color 0.3s ease;
+    transform: translateZ(15px); /* منظور */
+}
+
+/* تغيير لون العنوان عند التحويم على البطاقة */
+.feature-card:hover .feature-title {
     color: var(--primary-color);
-    margin-bottom: 10px;
 }
 
 .feature-description {
-    font-size: 0.95rem;
+    font-size: 1rem;
     color: var(--subtitle-color);
-    line-height: 1.5;
-}
-
-/* ------------------- Media Queries لقسم Features ------------------- */
-@media (max-width: 768px) {
-    .features-container {
-        flex-direction: column;
-    }
-    .feature-card {
-        margin-bottom: 20px;
-    }
+    line-height: 1.6;
+    transform: translateZ(10px); /* منظور */
 }
