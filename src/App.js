@@ -19,9 +19,12 @@ import Book from "./pages/Book/Book";
 import Confirmation from "./pages/Book/Confirmation";
 import Chatbot from "./pages/Chatbot/Chatbot";
 import Prescription from "./pages/Prescription/Prescription";
-import Rating from "./pages/Rating/Rating";
 import MeetingRobot from "./pages/MeetingRobot/MeetingRobot";
 import DoctorRobotAvatar from "./pages/MeetingRobot/DoctorRobotAvatar";
+import NotificationsPage from './pages/NotificationsPage/NotificationsPage';
+import ReportHistory from './pages/ReportHistory/ReportHistory';
+import ReportDetails from './pages/ReportDetails/ReportDetails';
+
 
 function App() {
   return (
@@ -49,9 +52,11 @@ function App() {
           <Route path="/Book/Confirmation" element={<Confirmation />} />
           <Route path="/Chatbot" element={<Chatbot />} />
           <Route path="/Prescription" element={<Prescription />} />
-          <Route path="/RatingSession" element={<Rating />} />
           <Route path="/MeetingRobot" element={<MeetingRobot />} />
           <Route path="/MeetingRobot/DoctorRobotAvatar" element={<DoctorRobotAvatar />} />
+          <Route path="/notifications" element={<NotificationsPage />} />
+         <Route path="/report-history" element={<ReportHistory />} />
+          <Route path="/report/:reportId" element={<ReportDetails />} />
         </Routes>
         <Footer />
       </AuthProvider>

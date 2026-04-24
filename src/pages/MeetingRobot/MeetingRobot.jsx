@@ -3,6 +3,15 @@ import './MeetingRobot.css';
 import { useNavigate } from 'react-router-dom';
 import DoctorRobotAvatar from './DoctorRobotAvatar';
 
+const TEST_SENTENCES = [
+  'أهلاً بك، كيف حالك اليوم؟',
+  'سأساعدك في تشخيص حالتك بإذن الله',
+  'angry',
+  'أنا happy بمساعدتك اليوم',
+  ' do you feel sad today?',
+  'disgusting',
+];
+
 const MeetingRobot = () => {
   const navigate = useNavigate();
   const [isRecording, setIsRecording]         = useState(true);
@@ -29,13 +38,19 @@ const MeetingRobot = () => {
   };
 
   const handleEndCall = () => {
+    window.speechSynthesis?.cancel();
+    setLastAiText('');
     setIsRecording(false);
-    navigate('/RatingSession');
+    navigate('/report-history');
+  };
+
+  const handleStopSpeech = () => {
+    window.speechSynthesis?.cancel();
+    setLastAiText('');
   };
 
   return (
     <div className="robot-meeting-container">
-      {/* Header */}
       <div className="meeting-header">
         <div className="meeting-title">
           <h2>Therapy Session</h2>
@@ -69,9 +84,7 @@ const MeetingRobot = () => {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="meeting-content">
-        {/* Robot Video */}
         <div className="video-container robot-video">
           <div className="video-label">
             <svg viewBox="0 0 24 24" fill="none">
@@ -84,11 +97,31 @@ const MeetingRobot = () => {
             <DoctorRobotAvatar
               avatarUrl="/69530adc0ca398caeab557ae.glb"
               aiText={lastAiText}
+              speakOnTextChange={true}
+              speechLang="auto"
             />
+            <div style={{
+              display: 'flex', gap: 8, padding: '8px 10px',
+              flexWrap: 'wrap', justifyContent: 'center',
+            }}>
+              {TEST_SENTENCES.map((s, i) => (
+                <button
+                  key={i}
+                  onClick={() => setLastAiText(s)}
+                  style={{
+                    background: 'rgba(255,255,255,0.15)', color: 'white',
+                    border: '1px solid rgba(255,255,255,0.3)', borderRadius: 8,
+                    padding: '6px 14px', cursor: 'pointer', fontSize: 13,
+                    backdropFilter: 'blur(4px)',
+                  }}
+                >
+                  جملة {i + 1}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* User Video */}
         <div className="video-container user-video">
           <div className="user-display">
             <div className="user-avatar">
@@ -103,7 +136,6 @@ const MeetingRobot = () => {
         </div>
       </div>
 
-      {/* Controls */}
       <div className="meeting-controls">
         <div className="controls-left">
           <div className="timer-display">
@@ -129,7 +161,14 @@ const MeetingRobot = () => {
             )}
           </button>
 
-          <button className={`control-button ${!isSpeakerOn ? 'off' : ''}`} onClick={() => setIsSpeakerOn(!isSpeakerOn)}>
+          <button
+            className={`control-button ${!isSpeakerOn ? 'off' : ''}`}
+            onClick={() => {
+              const newState = !isSpeakerOn;
+              setIsSpeakerOn(newState);
+              if (!newState) handleStopSpeech();
+            }}
+          >
             {isSpeakerOn ? (
               <svg viewBox="0 0 24 24" fill="none"><path d="M11 5L6 9H2v6h4l5 4V5zM19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
             ) : (

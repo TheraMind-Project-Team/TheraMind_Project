@@ -5,6 +5,8 @@
     --text-color: #333333;
     --light-gray-bg: #f5f5f5;
     --border-separator-color: #333333;
+    --danger-color: #ef4444;
+    --success-color: #22c55e;
 }
 
 /* ------------------- شريط التنقل الأساسي ------------------- */
@@ -29,17 +31,12 @@
 }
 
 /* ------------------- اللوجو ------------------- */
-.navbar-logo a {
-    text-decoration: none; /* ← إزالة الخط */
-}
-
 .navbar-logo .logo-text {
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--primary-color);
     display: flex;
     align-items: center;
-    text-decoration: none;
 }
 
 .navbar-logo .logo-icon {
@@ -185,7 +182,402 @@
     color: var(--primary-color);
 }
 
-/* Profile Button */
+/* ------------------- قسم الإشعارات (كامل) ------------------- */
+.notification-container {
+    position: relative;
+}
+
+.notification-bell-btn {
+    background: none;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 6px 10px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    position: relative;
+    display: flex;
+    align-items: center;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.notification-bell-btn:hover {
+    background: #f5f5f5;
+    transform: scale(1.05);
+}
+
+.notification-bell-btn:active {
+    transform: scale(0.97);
+}
+
+/* أنيميشن رنة الجرس */
+.notification-bell-btn .bell-icon {
+    display: inline-block;
+    animation: none;
+    transform-origin: top center;
+}
+
+.notification-bell-btn:hover .bell-icon {
+    animation: bellRing 0.5s ease-in-out;
+}
+
+@keyframes bellRing {
+    0%   { transform: rotate(0deg); }
+    15%  { transform: rotate(15deg); }
+    30%  { transform: rotate(-12deg); }
+    45%  { transform: rotate(10deg); }
+    60%  { transform: rotate(-8deg); }
+    75%  { transform: rotate(5deg); }
+    100% { transform: rotate(0deg); }
+}
+
+.notification-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: var(--danger-color);
+    color: white;
+    font-size: 10px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid white;
+    font-weight: 700;
+    /* نبضة للإشعار الجديد */
+    animation: badgePulse 2s infinite;
+}
+
+@keyframes badgePulse {
+    0%   { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
+    70%  { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+/* الـ Dropdown الإشعارات */
+.notification-dropdown {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    width: 390px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.08);
+    z-index: 1001;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    /* دخول سلس */
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+    transform-origin: top right;
+    animation: notifSlideIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes notifSlideIn {
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* رأس الإشعارات */
+.notification-header {
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #edf2f7;
+    background: #ffffff;
+}
+
+.notification-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #1a202c;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.notification-header h3 .header-bell {
+    color: var(--primary-color);
+    font-size: 18px;
+}
+
+.mark-all-btn {
+    color: var(--primary-color);
+    background: none;
+    border: none;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.mark-all-btn:hover {
+    background: #f0f9ff;
+    color: #57b7e4;
+}
+
+/* معلومات الغير مقروء */
+.notification-unread-info {
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e8f5fe 100%);
+    color: #4a5568;
+    font-size: 13px;
+    font-weight: 500;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.notification-unread-info::before {
+    content: "●";
+    color: var(--danger-color);
+    font-size: 8px;
+    animation: badgePulse 2s infinite;
+}
+
+/* قائمة الإشعارات */
+.notification-list {
+    max-height: 420px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #e2e8f0 transparent;
+}
+
+.notification-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.notification-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.notification-list::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 4px;
+}
+
+/* عنصر الإشعار */
+.notification-item {
+    padding: 15px 20px;
+    border-bottom: 1px solid #f7fafc;
+    display: flex;
+    gap: 14px;
+    position: relative;
+    transition: background 0.2s;
+    cursor: pointer;
+}
+
+.notification-item:hover {
+    background: #fafcff;
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+.notification-item.unread {
+    background: #fafeff;
+    border-left: 3px solid var(--primary-color);
+}
+
+.notification-item.unread:hover {
+    background: #f0f9ff;
+}
+
+/* الخط الأزرق للغير مقروء */
+.notification-item.read {
+    border-left: 3px solid transparent;
+}
+
+/* أيقونة الإشعار */
+.notif-icon-wrapper {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 16px;
+}
+
+.notif-icon-wrapper.success {
+    background: #dcfce7;
+    color: var(--success-color);
+}
+
+.notif-icon-wrapper.info {
+    background: #e0f2fe;
+    color: #0284c7;
+}
+
+.notif-icon-wrapper.warning {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+/* محتوى الإشعار */
+.notif-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.notif-title {
+    font-weight: 700;
+    font-size: 14px;
+    color: #1a202c;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.notif-desc {
+    font-size: 13px;
+    color: #718096;
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+
+/* الميتا (الوقت + الأزرار) */
+.notif-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.notif-time {
+    font-size: 12px;
+    color: #a0aec0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.notif-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* زر انضمام للجلسة */
+.btn-join-session {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #57b7e4 100%);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 6px rgba(132, 209, 240, 0.4);
+}
+
+.btn-join-session:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(132, 209, 240, 0.5);
+}
+
+.btn-join-session:active {
+    transform: translateY(0);
+}
+
+/* زر تحديد كمقروء */
+.btn-mark-read {
+    font-size: 12px;
+    color: var(--primary-color);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    padding: 2px 0;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.btn-mark-read:hover {
+    color: #57b7e4;
+    text-decoration: underline;
+}
+
+/* زر الإغلاق */
+.btn-close-notif {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    color: #cbd5e1;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    padding: 2px 4px;
+    border-radius: 4px;
+    transition: color 0.2s, background 0.2s;
+}
+
+.btn-close-notif:hover {
+    color: #94a3b8;
+    background: #f1f5f9;
+}
+
+/* ذيل قائمة الإشعارات */
+.notification-footer {
+    padding: 12px 20px;
+    text-align: center;
+    border-top: 1px solid #edf2f7;
+    background: #fafafa;
+}
+
+.notification-footer a {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.notification-footer a:hover {
+    color: #57b7e4;
+    text-decoration: underline;
+}
+
+/* حالة الإشعارات الفارغة */
+.notification-empty {
+    padding: 40px 20px;
+    text-align: center;
+    color: #a0aec0;
+}
+
+.notification-empty .empty-icon {
+    font-size: 40px;
+    margin-bottom: 10px;
+    display: block;
+    opacity: 0.5;
+}
+
+.notification-empty p {
+    font-size: 14px;
+    margin: 0;
+}
+
+/* ------------------- باقي أزرار البروفايل والخروج ------------------- */
 .profile-btn {
     display: flex;
     align-items: center;
@@ -197,98 +589,52 @@
     text-decoration: none;
     font-weight: 500;
     transition: all 0.3s;
+    border: 1px solid #333;
 }
 
-.profile-btn:hover {
-    background: #e2e8f0;
-}
-
-/* Logout Button */
 .logout-btn {
     display: flex;
     align-items: center;
     gap: 8px;
-    background: #fee2e2;
+    background: #fff;
     color: #dc2626;
     padding: 10px 16px;
-    border: none;
-    border-radius: 30px;
+    border: 1px solid #333;
+    border-radius: 8px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s;
 }
 
 .logout-btn:hover {
-    background: #fecaca;
-}
-
-/* ------------------- أزرار Log in و Sign up ------------------- */
-.navbar-actions {
-    display: flex;
-    gap: 12px;
-}
-
-.btn {
-    padding: 10px 20px;
-    border: 1px solid transparent;
-    border-radius: 30px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s;
-    font-size: 15px;
-}
-
-.btn-login {
-    background-color: var(--light-gray-bg);
-    color: #1178b4;
-}
-
-.btn-login:hover {
-    background-color: #0786eefa;
-    color: white;
-}
-
-.btn-signup {
-    background-color: var(--primary-color);
-    color: white;
-}
-
-.btn-signup:hover {
-    background-color: #0786eefa;
+    background: #fee2e2;
 }
 
 /* ------------------- Media Queries ------------------- */
 @media (max-width: 1200px) {
     .search-input { width: 240px; }
-}
-
-@media (max-width: 1024px) {
-    .navbar-container { padding: 10px 30px; }
-    .search-input { width: 220px; }
-    .navbar-right { gap: 15px; }
-}
-
-@media (max-width: 992px) {
-    .navbar-container { padding: 10px 20px; }
-    .navbar-links { gap: 20px; }
-    .search-input { width: 200px; }
+    .notification-dropdown { width: 340px; }
 }
 
 @media (max-width: 768px) {
     .navbar-container { flex-direction: column; gap: 16px; padding: 16px 20px; }
-    .navbar-links { margin: 0; order: 3; width: 100%; justify-content: center; }
-    .navbar-right, .navbar-actions { order: 2; width: 100%; justify-content: center; }
+    .navbar-links { order: 3; width: 100%; justify-content: center; }
+    .navbar-right { order: 2; width: 100%; justify-content: center; }
     .search-input { width: 100%; max-width: 320px; }
-    .robot-link, .profile-btn, .logout-btn { padding: 10px 14px; font-size: 14px; }
-}
-
-@media (max-width: 480px) {
-    .navbar-links { flex-direction: column; gap: 12px; text-align: center; }
-    .navbar-right { flex-direction: column; gap: 12px; }
-    .search-input { width: 100%; }
+    .notification-dropdown {
+        position: fixed;
+        top: 70px;
+        left: 10px;
+        right: 10px;
+        width: auto;
+        border-radius: 12px;
+    }
 }
 
 /* ------------------- Keyframes ------------------- */
 @keyframes fadeIn {
-    to { opacity: 1; transform: translateY(0); }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
