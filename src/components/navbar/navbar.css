@@ -31,6 +31,11 @@
 }
 
 /* ------------------- اللوجو ------------------- */
+
+.navbar-logo a {
+    text-decoration: none; /* ← إزالة الخط */
+}
+
 .navbar-logo .logo-text {
     font-size: 1.5rem;
     font-weight: 700;
@@ -43,6 +48,8 @@
     font-size: 1.2rem;
     margin-right: 8px;
     color: var(--primary-color);
+    text-decoration: none;
+
 }
 
 /* ------------------- روابط التنقل ------------------- */
@@ -608,6 +615,35 @@
 
 .logout-btn:hover {
     background: #fee2e2;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: 1px solid transparent;
+    border-radius: 30px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 15px;
+}
+
+.btn-login {
+    background-color: var(--light-gray-bg);
+    color: #1178b4;
+}
+
+.btn-login:hover {
+    background-color: #0786eefa;
+    color: white;
+}
+
+.btn-signup {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-signup:hover {
+    background-color: #0786eefa;
 }
 
 /* ------------------- Media Queries ------------------- */

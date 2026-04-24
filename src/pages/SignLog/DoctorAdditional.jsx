@@ -1,7 +1,8 @@
 // src/pages/SignLog/DoctorAdditional.jsx
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './AdditionalForms.css';
+
 const DoctorAdditional = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -14,6 +15,9 @@ const DoctorAdditional = () => {
   const [experience, setExperience] = useState('');
   const [medicalLicense, setMedicalLicense] = useState(null);
   const [profilePhoto, setProfilePhoto] = useState(null);
+
+  const medicalLicenseRef = useRef(null);
+  const profilePhotoRef = useRef(null);
 
   const [timeSlots, setTimeSlots] = useState([
     { day: '', timeOfDay: 'Morning', startTime: '', endTime: '', sessionType: 'Online' }
@@ -127,12 +131,18 @@ const DoctorAdditional = () => {
 
             <div className="file-upload-group">
               <label>Medical License *</label>
-              <div className="file-upload-box required">
+              <div
+                className="file-upload-box required"
+                onClick={() => medicalLicenseRef.current.click()}
+                style={{ cursor: 'pointer' }}
+              >
                 <input
                   type="file"
                   accept=".png,.jpg,.jpeg,.pdf"
+                  ref={medicalLicenseRef}
                   onChange={(e) => setMedicalLicense(e.target.files[0])}
                   required
+                  style={{ display: 'none' }}
                 />
                 <span className="upload-icon">⬆</span>
                 <p>{medicalLicense ? medicalLicense.name : 'Upload Medical License'}</p>
@@ -142,11 +152,17 @@ const DoctorAdditional = () => {
 
             <div className="file-upload-group">
               <label>Profile Photo (Optional)</label>
-              <div className="file-upload-box">
+              <div
+                className="file-upload-box"
+                onClick={() => profilePhotoRef.current.click()}
+                style={{ cursor: 'pointer' }}
+              >
                 <input
                   type="file"
                   accept=".png,.jpg,.jpeg"
+                  ref={profilePhotoRef}
                   onChange={(e) => setProfilePhoto(e.target.files[0])}
+                  style={{ display: 'none' }}
                 />
                 <span className="upload-icon">⬆</span>
                 <p>{profilePhoto ? profilePhoto.name : 'Upload Profile Photo'}</p>

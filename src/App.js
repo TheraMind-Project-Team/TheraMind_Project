@@ -1,7 +1,7 @@
 // src/App.jsx
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import './App.css';
-import { AuthProvider } from './context/AuthContext'; // ← الإضافة الجديدة
+import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/navbar/Navbar';
 import Hero from './pages/Hero/Hero';
 import Footer from "./components/footer/Footer";
@@ -25,11 +25,20 @@ import NotificationsPage from './pages/NotificationsPage/NotificationsPage';
 import ReportHistory from './pages/ReportHistory/ReportHistory';
 import ReportDetails from './pages/ReportDetails/ReportDetails';
 
+const hideFooterRoutes = ['/Chatbot', '/MeetingRobot', '/MeetingRobot/DoctorRobotAvatar'];
+
+const ConditionalFooter = () => {
+  const location = useLocation();
+  const shouldHide = hideFooterRoutes.some(route => 
+    location.pathname.toLowerCase() === route.toLowerCase()
+  );
+  return shouldHide ? null : <Footer />;
+};
 
 function App() {
   return (
     <Router>
-      <AuthProvider>  {/* ← غلّف كل حاجة بالـ AuthProvider */}
+      <AuthProvider>
         <Navbar />
         <Routes>
           <Route path="/" element={<Hero />} />
@@ -55,10 +64,10 @@ function App() {
           <Route path="/MeetingRobot" element={<MeetingRobot />} />
           <Route path="/MeetingRobot/DoctorRobotAvatar" element={<DoctorRobotAvatar />} />
           <Route path="/notifications" element={<NotificationsPage />} />
-         <Route path="/report-history" element={<ReportHistory />} />
+          <Route path="/report-history" element={<ReportHistory />} />
           <Route path="/report/:reportId" element={<ReportDetails />} />
         </Routes>
-        <Footer />
+        <ConditionalFooter />
       </AuthProvider>
     </Router>
   );

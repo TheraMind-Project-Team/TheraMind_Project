@@ -118,9 +118,7 @@ const Navbar = () => {
           <li>
             <ProtectedLink to="/about" className="nav-link">About</ProtectedLink>
           </li>
-          <li>
-            <ProtectedLink to="/blogs" className="nav-link">Blogs</ProtectedLink>
-          </li>
+      
 
           {/* Tests Dropdown */}
           <li

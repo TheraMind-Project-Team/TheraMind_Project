@@ -132,7 +132,7 @@ const ReportDetails = () => {
       
       {/* ── BACK BUTTON ── */}
       <button
-        onClick={() => navigate('/reports')}
+        onClick={() => navigate('/report-history')}
         className="rd-back-btn"
       >
         ← Back to History

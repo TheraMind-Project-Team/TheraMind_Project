@@ -275,8 +275,8 @@ const Profile = () => {
 
           {/* About */}
           <section className="about-section">
-            <h2>About Dr. Yahia Hassan</h2>
-            <p>Dr. Yahia Hassan Ragab is a highly experienced Clinical Psychologist with over 15 years of experience in mental health care. He specializes in treating depression, anxiety disorders, PTSD, and provides cognitive behavioral therapy.</p>
+            <h2>About Dr. Rabie Hassan Ragab</h2>
+            <p>Dr. Rabie Hassan Ragab is a highly experienced Clinical Psychologist with over 15 years of experience in mental health care. He specializes in treating depression, anxiety disorders, PTSD, and provides cognitive behavioral therapy.</p>
             <p>Dr. Hassan graduated from Cairo University Faculty of Medicine and completed his specialization in Clinical Psychology at the American University in Cairo. He has helped over 500 patients overcome their mental health challenges through evidence-based therapeutic approaches.</p>
             <p>His patient-centered approach focuses on building trust, understanding individual needs, and creating personalized treatment plans that deliver real results.</p>
           </section>

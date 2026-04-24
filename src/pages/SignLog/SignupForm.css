@@ -63,7 +63,7 @@ max-width: 1300px;
 }
 
 /* Social Buttons */
-.social-login-buttons {
+/*.social-login-buttons {
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -95,7 +95,7 @@ max-width: 1300px;
   background: #f8f9fa;
   border-color: #0078d4;
   color: #0078d4;
-}
+}*/
 
 .divider {
   text-align: center;
@@ -274,4 +274,3 @@ max-width: 1300px;
     padding: 30px;
   }
 }
-

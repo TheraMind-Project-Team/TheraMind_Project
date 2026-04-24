@@ -56,17 +56,9 @@ const Login = () => {
           Log in to continue your journey to better health.
         </p>
 
-        {/* Social Login Buttons */}
-        <div className="social-login-buttons">
-          <button className="btn btn-social btn-google">
-            <FontAwesomeIcon icon={faGoogleBrand} /> Continue with Google
-          </button>
-          <button className="btn btn-social btn-microsoft">
-            <FontAwesomeIcon icon={faMicrosoftBrand} /> Continue with Microsoft
-          </button>
-        </div>
+        
 
-        <div className="divider">Or continue with email</div>
+        <div className="divider">Continue With Email</div>
 
         <form className="login-form" onSubmit={handleSubmit}>
           <div className="input-group">

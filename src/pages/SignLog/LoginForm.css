@@ -63,7 +63,7 @@
 }
 
 /* Social Buttons */
-.social-login-buttons {
+/*.social-login-buttons {
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -86,7 +86,7 @@
 }
 
 .btn-google:hover { border-color: #4285f4; color: #4285f4; }
-.btn-microsoft:hover { border-color: #0078d4; color: #0078d4; }
+.btn-microsoft:hover { border-color: #0078d4; color: #0078d4; }*/
 
 .divider {
   text-align: center;

@@ -82,17 +82,9 @@ const Signup = () => {
           Begin your journey to peace of mind with your doctor and AI.
         </h2>
 
-        {/* Social Login Buttons */}
-        <div className="social-login-buttons">
-          <button className="btn btn-social btn-google">
-            <FontAwesomeIcon icon={faGoogle} /> Sign up with Google
-          </button>
-          <button className="btn btn-social btn-microsoft">
-            <FontAwesomeIcon icon={faMicrosoft} /> Sign up with Microsoft
-          </button>
-        </div>
 
-        <div className="divider">Or sign up with email</div>
+
+        <div className="divider">Sign up With Email</div>
 
         <form className="signup-form" onSubmit={handleContinue}>
           {/* اختيار النوع */}
